@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-capture-request-access"
+description = "Enables the capture_request_access command without any pre-configured scope."
+commands.allow = ["capture_request_access"]
+
+[[permission]]
+identifier = "deny-capture-request-access"
+description = "Denies the capture_request_access command without any pre-configured scope."
+commands.deny = ["capture_request_access"]

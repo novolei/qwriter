@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-media-export"
+description = "Enables the media_export command without any pre-configured scope."
+commands.allow = ["media_export"]
+
+[[permission]]
+identifier = "deny-media-export"
+description = "Denies the media_export command without any pre-configured scope."
+commands.deny = ["media_export"]

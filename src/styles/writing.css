@@ -1,0 +1,152 @@
+.selection-bubble {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  box-shadow: 0 7px 24px #1827101a;
+  color: var(--green);
+  font: 12px var(--ui-font);
+  z-index: 10;
+}
+.selection-ai {
+  font-size: 11px;
+  padding: 6px 8px;
+}
+.empty-line-menu button {
+  width: 26px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--muted);
+  border-radius: 6px;
+}
+.selection-context {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px;
+  border-radius: 7px;
+  margin-top: 12px;
+  color: var(--green);
+  background: var(--tint);
+  font-size: 10px;
+}
+.field-error {
+  color: #a75044;
+  font-size: 12px;
+}
+.tiptap {
+  outline: none;
+}
+.tiptap > * {
+  position: relative;
+  transition:
+    opacity 0.2s ease,
+    background-color 0.2s ease;
+}
+.tiptap p.is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(--muted);
+  opacity: 0.65;
+  font-size: 0.9em;
+}
+.paragraph-focus .tiptap:focus > :not(.current-block) {
+  opacity: 0.38;
+}
+.paragraph-focus .tiptap > .current-block {
+  opacity: 1;
+}
+.typewriter-mode .paper {
+  padding-top: 32vh;
+  padding-bottom: 45vh;
+}
+.tiptap ::selection {
+  background: color-mix(in srgb, var(--green) 21%, transparent);
+}
+.tiptap hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--line) 15%,
+    var(--line) 85%,
+    transparent
+  );
+  margin: 2.2em 0;
+}
+.tiptap a {
+  color: var(--green);
+  text-decoration-color: color-mix(in srgb, var(--green) 35%, transparent);
+  text-underline-offset: 4px;
+}
+.tiptap img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 9px;
+  margin: 1.6em auto;
+}
+.tiptap img.ProseMirror-selectednode {
+  outline: 2px solid var(--green);
+  outline-offset: 4px;
+}
+.tiptap pre {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px 22px;
+  background: var(--panel);
+  tab-size: 2;
+}
+.tiptap pre::before {
+  content: "● ● ●";
+  font: 8px var(--ui-font);
+  letter-spacing: 2px;
+  color: var(--muted);
+  opacity: 0.5;
+  display: block;
+  margin-bottom: 15px;
+}
+.tiptap pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.8em;
+}
+.tiptap .selectedCell::after {
+  background: color-mix(in srgb, var(--green) 13%, transparent);
+}
+.tiptap ul[data-type="taskList"] li {
+  align-items: baseline;
+}
+.tiptap ul[data-type="taskList"] input:checked {
+  accent-color: var(--green);
+}
+@container (max-width: 760px) {
+  .editor-toolbar {
+    padding: 8px 20px;
+    gap: 5px 8px;
+  }
+  .text-controls {
+    order: 0;
+  }
+  .utility-controls {
+    order: 1;
+  }
+  .format-controls {
+    order: 2;
+    flex-basis: 100%;
+    padding-top: 6px;
+    border-top: 1px solid var(--line);
+    gap: 3px;
+  }
+  .toolbar-disclosure {
+    margin-left: auto;
+  }
+}

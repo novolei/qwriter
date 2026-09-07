@@ -1,0 +1,139 @@
+.workspace {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.sidebar {
+  width: 236px;
+  flex-shrink: 0;
+  background: var(--side);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--line);
+  padding: 24px 15px 0;
+}
+.search {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--muted);
+}
+.search input {
+  width: 100%;
+  font-size: 11px;
+}
+.search kbd {
+  font-size: 12px;
+}
+.section-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+  margin: 24px 8px 10px;
+}
+.section-label button {
+  padding: 0;
+}
+.library-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  font-size: 12px;
+}
+.library-label span {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 10px;
+}
+.documents {
+  overflow: auto;
+  max-height: 32vh;
+}
+.doc {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 12px 10px;
+  margin: 3px 0;
+  font-size: 11px;
+  text-align: left;
+}
+.doc span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.doc svg {
+  color: var(--muted);
+  width: 14px;
+}
+.doc.selected {
+  background: var(--tint);
+  color: var(--green);
+}
+.doc.selected svg {
+  color: var(--green);
+}
+.doc i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.new-document {
+  margin: 10px 0;
+  color: var(--muted);
+  justify-content: flex-start;
+  font-size: 11px;
+  padding-left: 10px;
+}
+.outline {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  overflow: auto;
+}
+.outline .section-label {
+  margin-top: 23px;
+}
+.outline > button {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  padding: 10px 12px;
+  text-align: left;
+  line-height: 1.7;
+  width: 100%;
+}
+.outline > button:first-of-type {
+  color: var(--green);
+}
+.sidebar-bottom {
+  margin-top: auto;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  padding: 14px 0;
+  font-size: 9px;
+  color: var(--muted);
+}
+.sidebar-bottom button {
+  margin-left: auto;
+}
+.local-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: #7e9772;
+  border-radius: 100%;
+  flex-shrink: 0;
+}

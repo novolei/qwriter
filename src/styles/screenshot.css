@@ -1,0 +1,180 @@
+.annotation-modal {
+  width: calc(100vw - 40px);
+  height: calc(100dvh - 40px);
+}
+.annotation-modal .modal-heading {
+  padding-top: 16px;
+}
+.annotation-modal .modal-body {
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 0 0 17px 17px;
+}
+.screenshot-editor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #222722;
+}
+.annotation-canvas {
+  flex-shrink: 0;
+}
+.screenshot-problem {
+  flex-wrap: wrap;
+  align-content: center;
+  padding: 24px;
+  text-align: center;
+}
+.screenshot-problem p {
+  flex-basis: 100%;
+}
+.capture-displays-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.capture-access {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--tint);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.capture-access button {
+  border: 1px solid var(--line);
+  padding: 8px 12px;
+  background: var(--paper);
+  border-radius: 8px;
+}
+.screenshot-guide {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 11px;
+  gap: 16px;
+  color: #e8ede7;
+  background: #1a251cdd;
+  border-radius: 8px;
+  padding: 6px 12px;
+  pointer-events: none;
+  max-width: calc(100% - 24px);
+}
+.screenshot-guide > span {
+  white-space: normal;
+  line-height: 1.5;
+}
+.screenshot-guide > button {
+  pointer-events: auto;
+  padding: 3px 6px;
+  border: 1px solid #5a665a;
+  flex-shrink: 0;
+}
+.screenshot-editor .screenshots {
+  flex-shrink: 0;
+  font-family: var(--ui-font);
+}
+.screenshot-editor .screenshots-operations {
+  border-radius: 9px;
+  box-shadow: 0 8px 25px #101b1933;
+}
+.screenshot-editor .screenshots-operations-buttons,
+.screenshot-editor .screenshots-option-container {
+  border-radius: 9px;
+  background: var(--paper);
+  border-color: var(--line);
+}
+.screenshot-editor .screenshots-button {
+  color: var(--ink);
+  border-radius: 5px;
+}
+.screenshot-editor .screenshots-button:hover,
+.screenshot-editor .screenshots-button-checked {
+  background: var(--tint);
+  outline-color: var(--green);
+}
+.screenshot-editor .screenshots-button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+}
+.screenshot-editor .screenshots-button-disabled {
+  opacity: 0.35;
+}
+.screenshot-editor [class^="screenshots-canvas-border-"],
+.screenshot-editor [class^="screenshots-canvas-point-"],
+.screenshot-editor .screenshots-size-active > .screenshots-size-pointer {
+  background-color: #759472;
+}
+.screenshot-busy,
+.screenshot-problem {
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  background: #1b241de8;
+  color: #eef2eb;
+}
+.stitch-list {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 18px;
+}
+.stitch-item {
+  flex: 0 0 180px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.stitch-item > img {
+  height: 140px;
+  width: 100%;
+  object-fit: contain;
+  background: var(--side);
+}
+.stitch-item > span {
+  color: var(--green);
+  font-size: 11px;
+}
+.stitch-item label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 11px;
+}
+.stitch-item input {
+  width: 100%;
+  accent-color: var(--green);
+}
+.stitch-workspace > p {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 12px;
+}
+@media (max-width: 560px) {
+  .screenshot-guide {
+    font-size: 9px;
+    gap: 6px;
+    max-width: 96%;
+  }
+}

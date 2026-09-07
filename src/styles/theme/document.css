@@ -1,0 +1,151 @@
+.document-bar {
+  padding: 0 26px;
+  height: 54px;
+}
+.breadcrumb {
+  gap: 11px;
+}
+.breadcrumb input {
+  font-size: 12px;
+}
+.document-actions {
+  gap: 6px;
+}
+.document-actions button {
+  width: 30px;
+  height: 30px;
+}
+.format-bar {
+  height: 48px;
+  gap: 5px;
+  padding: 0 31px;
+  color: #717b68;
+}
+.dark .format-bar {
+  color: var(--muted);
+}
+.format-bar button {
+  width: 28px;
+  height: 28px;
+}
+.format-hint {
+  letter-spacing: 1.2px;
+  font-size: 10px;
+}
+.paper {
+  max-width: var(--writing-width);
+  padding: 46px 52px 56px;
+}
+.paper-eyebrow {
+  font-size: 9px;
+  letter-spacing: 2px;
+  margin-bottom: 31px;
+}
+.paper-eyebrow > span:first-child {
+  width: 20px;
+}
+.paper-date {
+  font-size: 10px;
+}
+.tiptap {
+  font-size: var(--writing-size);
+  line-height: var(--writing-line);
+  caret-color: var(--green);
+}
+.tiptap h1 {
+  font-size: 1.85em;
+  line-height: 1.65;
+  margin-bottom: 25px;
+  letter-spacing: 0.3px;
+}
+.tiptap h2 {
+  font-size: 1.35em;
+  margin-top: 34px;
+}
+.tiptap h1 + p {
+  font-size: 1em;
+  color: var(--muted);
+}
+.tiptap blockquote {
+  background: linear-gradient(100deg, var(--panel), transparent);
+  border-left: 2px solid #94a77f;
+  padding: 10px 22px;
+  margin: 28px 0;
+  color: var(--muted);
+}
+.tiptap :is(ul, ol) {
+  margin: 18px 0;
+}
+.tiptap ::selection {
+  background: #adc29655;
+}
+.tiptap table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  margin: 22px 0;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: 0.85em;
+}
+.tiptap :is(th, td) {
+  border: 1px solid var(--line);
+  padding: 8px 12px;
+  vertical-align: top;
+  position: relative;
+}
+.tiptap th {
+  background: var(--tint);
+  font-weight: 600;
+}
+.tiptap .selectedCell:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #97b07a30;
+  pointer-events: none;
+}
+.tiptap ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+.tiptap ul[data-type="taskList"] li {
+  display: flex;
+  gap: 10px;
+  padding: 0;
+}
+.tiptap ul[data-type="taskList"] li > label {
+  flex: 0 0 auto;
+  padding-top: 4px;
+}
+.tiptap ul[data-type="taskList"] li > div {
+  flex: 1;
+}
+.tiptap input[type="checkbox"] {
+  accent-color: var(--green);
+  width: 14px;
+  height: 14px;
+}
+.source-editor {
+  color: var(--text);
+  tab-size: 2;
+  min-height: 65vh;
+}
+.source-tools > button:not([title="切换 Markdown 源码"]) {
+  pointer-events: none;
+  opacity: 0.35;
+}
+.source-notice {
+  font-size: 11px;
+  line-height: 1.7;
+  background: var(--tint);
+  color: var(--green);
+  padding: 9px 28px;
+}
+.statusbar {
+  height: 36px;
+  font-size: 10px;
+  padding: 0 24px;
+}
+.statusbar button {
+  font-size: 10px;
+}

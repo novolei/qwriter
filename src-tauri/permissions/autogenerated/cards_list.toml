@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-cards-list"
+description = "Enables the cards_list command without any pre-configured scope."
+commands.allow = ["cards_list"]
+
+[[permission]]
+identifier = "deny-cards-list"
+description = "Denies the cards_list command without any pre-configured scope."
+commands.deny = ["cards_list"]

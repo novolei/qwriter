@@ -1,0 +1,247 @@
+.primary {
+  border-radius: 7px;
+  box-shadow: 0 2px 4px #2340190c;
+}
+.modal {
+  --dialog-padding: 32px;
+  --dialog-scroll-inset: 12px;
+  width: 510px;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 90px #18271026;
+  animation: dialog-in 0.18s ease-out;
+}
+.modal-heading {
+  flex: 0 0 auto;
+  padding: var(--dialog-padding) var(--dialog-padding) 12px;
+}
+.modal-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0 var(--dialog-scroll-inset) 16px 0;
+  padding: 0 calc(var(--dialog-padding) - var(--dialog-scroll-inset) - 4px) 16px
+    var(--dialog-padding);
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.modal-body:hover,
+.modal-body:focus-visible {
+  scrollbar-color: color-mix(in srgb, var(--muted) 30%, transparent) transparent;
+}
+.modal-body:focus-visible {
+  outline: 1px solid var(--line);
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+/* WebView2 / WebKit: no track or arrows; a quiet, inset handle on hover. */
+@supports selector(::-webkit-scrollbar) {
+  .modal-body,
+  .modal-body:hover,
+  .modal-body:focus-visible {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+  .modal-body::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .modal-body::-webkit-scrollbar-track,
+  .modal-body::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  .modal-body:hover::-webkit-scrollbar-thumb,
+  .modal-body:focus-visible::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--muted) 30%, transparent);
+    border-radius: 8px;
+  }
+  .modal-body::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--muted) 55%, transparent);
+  }
+  .modal-body::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+@media (forced-colors: active) {
+  .modal-body {
+    scrollbar-color: auto;
+  }
+  .modal-body::-webkit-scrollbar-thumb {
+    background: ButtonText;
+  }
+}
+.modal-heading h2 {
+  font-size: 25px;
+  margin: 13px 0 8px;
+  letter-spacing: 0.4px;
+}
+.modal-heading > button {
+  align-self: flex-start;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.modal-heading > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.modal-body > p {
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 10px 0 22px;
+  color: var(--muted);
+}
+.modal label {
+  font-size: 12px;
+  margin-top: 18px;
+}
+.modal input,
+.modal select {
+  font-size: 12px;
+  padding: 11px 12px;
+  border-radius: 7px;
+}
+.modal-footer {
+  margin-top: 26px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.modal-footer > button {
+  font-size: 12px;
+}
+.profile-picker {
+  display: flex;
+  gap: 7px;
+  padding: 9px;
+  background: var(--tint);
+  border-radius: 10px;
+  margin: 22px 0;
+}
+.profile-picker select {
+  border: 0;
+  background: transparent;
+  padding: 5px;
+  flex: 1;
+  min-width: 0;
+  color: var(--green);
+}
+.profile-picker button {
+  color: var(--green);
+}
+.connection-message {
+  background: var(--tint);
+  color: var(--green) !important;
+  padding: 11px 13px;
+  border-radius: 7px;
+}
+.wide-modal {
+  width: 880px;
+}
+.history-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 22px;
+  min-height: 280px;
+}
+.history-list {
+  max-height: 55vh;
+  overflow: auto;
+  border-right: 1px solid var(--line);
+  padding-right: 10px;
+}
+.history-list button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  padding: 12px;
+  gap: 7px;
+  margin-bottom: 6px;
+}
+.history-list strong {
+  font-size: 11px;
+  font-weight: 500;
+}
+.history-list small {
+  font-size: 10px;
+}
+.history-list .chosen {
+  background: var(--tint);
+  color: var(--green);
+}
+.history-preview pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font:
+    13px/1.9 "Segoe UI",
+    "Microsoft YaHei",
+    sans-serif;
+  max-height: 48vh;
+  overflow: auto;
+  margin: 0 0 20px;
+}
+.diff-preview {
+  max-height: 58vh;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.diff-preview > div {
+  display: flex;
+  gap: 12px;
+  padding: 5px 13px;
+}
+.diff-preview > div > span {
+  width: 14px;
+  flex-shrink: 0;
+  font:
+    13px/1.9 Consolas,
+    monospace;
+}
+.diff-preview pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0;
+  font:
+    13px/1.9 "Segoe UI",
+    "Microsoft YaHei",
+    sans-serif;
+}
+.diff-add {
+  background: #75a25c1f;
+  color: var(--green);
+}
+.diff-remove {
+  background: #c276621a;
+  color: #a65e4a;
+}
+.dark .diff-remove {
+  color: #e4a58d;
+}
+.diff-same {
+  color: var(--muted);
+}
+.diff-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.diff-columns section {
+  min-width: 0;
+}
+.diff-columns h3 {
+  font-size: 12px;
+  color: var(--green);
+}
+.diff-columns pre {
+  max-height: 52vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.8 inherit;
+}

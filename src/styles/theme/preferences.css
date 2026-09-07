@@ -1,0 +1,112 @@
+.appearance-preview {
+  margin: 22px 0;
+  padding: 26px;
+  text-align: center;
+  font-family: "Songti SC", SimSun, serif;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--green);
+}
+.modal input[type="range"] {
+  accent-color: var(--green);
+  padding: 5px 0;
+  border: 0;
+  box-shadow: none;
+}
+.modal label:has(input[type="range"]) {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+}
+.modal label:has(input[type="range"]) input {
+  grid-column: 1 / -1;
+}
+.theme-choices {
+  display: flex;
+  gap: 12px;
+  margin: 25px 0;
+}
+.theme-choices button {
+  flex: 1;
+  padding: 13px;
+  border: 1px solid var(--line);
+  font-size: 12px;
+}
+.theme-choices .chosen {
+  background: var(--tint);
+  border-color: #98aa8460;
+  color: var(--green);
+}
+.storage-detail {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.storage-detail small {
+  display: block;
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+  font-family: Consolas, monospace;
+  font-size: 10px;
+}
+.save-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #a5712920;
+  padding: 10px 20px;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.save-alert span {
+  flex: 1;
+}
+.save-alert button {
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+}
+.boot-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--paper);
+  color: var(--green);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+.boot-overlay p {
+  font-family: SimSun, serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+.empty-search {
+  padding: 16px 12px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+.focus .paper {
+  max-width: var(--writing-width);
+  padding-top: 56px;
+}
+.focus .format-bar {
+  justify-content: center;
+}
+.focus .format-hint {
+  display: none;
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

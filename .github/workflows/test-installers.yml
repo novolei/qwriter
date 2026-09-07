@@ -1,0 +1,53 @@
+name: Test installers
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["qwriter-test-*"]
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: Windows-x64
+            os: windows-latest
+            command: npm run desktop:package:windows
+            artifact: src-tauri/target/release/bundle/nsis/*-setup.exe
+          - platform: macOS-universal
+            os: macos-latest
+            command: npm run desktop:package:macos
+            artifact: src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Install both macOS targets
+        if: runner.os == 'macOS'
+        run: rustup target add aarch64-apple-darwin x86_64-apple-darwin
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+          key: installers-${{ matrix.platform }}
+      - run: npm ci
+      - run: npm run check
+      - name: Build installer
+        run: ${{ matrix.command }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Qwriter-${{ matrix.platform }}-${{ github.run_number }}
+          path: ${{ matrix.artifact }}
+          if-no-files-found: error
+          retention-days: 14

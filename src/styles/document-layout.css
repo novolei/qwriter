@@ -1,0 +1,211 @@
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+}
+.document-bar {
+  height: 53px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.breadcrumb {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--muted);
+  min-width: 0;
+  font-size: 10px;
+  flex: 1;
+}
+.breadcrumb > span {
+  white-space: nowrap;
+}
+.breadcrumb input {
+  color: var(--text);
+  font-size: 11px;
+  width: 100%;
+  max-width: 270px;
+}
+.document-actions {
+  display: flex;
+  gap: 9px;
+}
+.active-tool {
+  color: var(--green);
+  background: var(--tint);
+}
+.format-bar {
+  height: 49px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 26px;
+  flex-shrink: 0;
+}
+.format-bar button {
+  min-width: 27px;
+  padding: 6px;
+  font-family: Georgia, serif;
+}
+.divider {
+  width: 1px;
+  height: 14px;
+  background: var(--line);
+  margin: 0 6px;
+}
+.format-hint {
+  font-size: 9px;
+  color: var(--muted);
+  margin-left: auto;
+  letter-spacing: 1px;
+}
+.paper-scroll {
+  overflow: auto;
+  flex: 1;
+  scroll-behavior: smooth;
+}
+.paper {
+  max-width: 800px;
+  margin: auto;
+  padding: 42px 64px 45px;
+}
+.paper-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 30px;
+}
+.paper-eyebrow > span:first-child {
+  background: var(--green);
+  width: 15px;
+  height: 1px;
+}
+.paper-date {
+  margin-left: auto;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.tiptap {
+  outline: none;
+  font-family: "Noto Serif SC", "Songti SC", SimSun, Georgia, serif;
+  font-size: 15px;
+  line-height: 2.1;
+  min-height: 420px;
+  overflow-wrap: anywhere;
+}
+.tiptap h1 {
+  font-size: 29px;
+  letter-spacing: 0.5px;
+  line-height: 1.6;
+  margin: 0 0 26px;
+  font-weight: 650;
+}
+.tiptap h2 {
+  font-size: 20px;
+  margin: 32px 0 14px;
+  font-weight: 650;
+}
+.tiptap h3 {
+  font-size: 17px;
+}
+.tiptap p {
+  margin: 15px 0;
+}
+.tiptap h1 + p {
+  color: var(--muted);
+  font-size: 15px;
+}
+.tiptap blockquote {
+  border-left: 3px solid #a3b296;
+  background: var(--panel);
+  margin: 25px 0;
+  padding: 9px 21px;
+  color: #7f8977;
+  font-style: italic;
+}
+.tiptap blockquote p {
+  margin: 4px 0;
+}
+.tiptap ul,
+.tiptap ol {
+  padding-left: 22px;
+}
+.tiptap li {
+  padding-left: 5px;
+}
+.tiptap li p {
+  margin: 5px 0;
+}
+.tiptap li::marker {
+  color: #8c9a7e;
+}
+.tiptap strong {
+  font-weight: 700;
+}
+.tiptap hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 31px 0;
+}
+.tiptap pre {
+  background: var(--side);
+  padding: 16px;
+  border-radius: 6px;
+  overflow: auto;
+  line-height: 1.6;
+}
+.tiptap code {
+  font-size: 13px;
+}
+.tiptap a {
+  color: var(--green);
+}
+.endmark {
+  text-align: center;
+  color: #b8c2ac;
+  font-size: 16px;
+  margin-top: 35px;
+}
+.source-editor {
+  width: 100%;
+  min-height: 65vh;
+  resize: vertical;
+  font-family: Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.statusbar {
+  border-top: 1px solid var(--line);
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: 9px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.statusbar > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.statusbar > div {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+.statusbar button {
+  font-size: 9px;
+  padding: 3px;
+}

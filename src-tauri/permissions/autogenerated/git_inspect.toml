@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-git-inspect"
+description = "Enables the git_inspect command without any pre-configured scope."
+commands.allow = ["git_inspect"]
+
+[[permission]]
+identifier = "deny-git-inspect"
+description = "Denies the git_inspect command without any pre-configured scope."
+commands.deny = ["git_inspect"]

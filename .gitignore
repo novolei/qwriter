@@ -1,0 +1,11 @@
+node_modules/
+dist/
+src-tauri/target/
+*.log
+.env*
+*.tsbuildinfo
+public/ocr/
+src-tauri/gen/
+docs/**/*.png
+docs/**/*.mp4
+docs/ENVIRONMENT.md

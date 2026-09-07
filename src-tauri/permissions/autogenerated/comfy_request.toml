@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-comfy-request"
+description = "Enables the comfy_request command without any pre-configured scope."
+commands.allow = ["comfy_request"]
+
+[[permission]]
+identifier = "deny-comfy-request"
+description = "Denies the comfy_request command without any pre-configured scope."
+commands.deny = ["comfy_request"]

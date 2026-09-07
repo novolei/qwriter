@@ -1,0 +1,68 @@
+@media (min-width: 1600px) {
+  .sidebar {
+    width: 260px;
+  }
+  .agent-panel {
+    width: 345px;
+  }
+  .paper {
+    padding-top: 60px;
+  }
+  .agent-content {
+    padding: 35px 25px;
+  }
+}
+@media (max-width: 1150px) {
+  .sidebar {
+    width: 210px;
+  }
+  .agent-panel {
+    width: 280px;
+  }
+  .paper {
+    padding: 30px;
+  }
+  .format-hint {
+    display: none;
+  }
+  .statusbar > div {
+    gap: 9px;
+  }
+}
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+  .agent-panel {
+    width: 280px;
+  }
+  .paper {
+    padding: 26px;
+  }
+  .tiptap h1 {
+    font-size: 25px;
+  }
+}
+@media (max-width: 650px) {
+  .agent-panel {
+    position: absolute;
+    right: 0;
+    top: 56px;
+    bottom: 0;
+    z-index: 5;
+    width: min(340px, 95vw);
+    box-shadow: -10px 0 40px #0001;
+  }
+  .statusbar > div > span:nth-child(2) {
+    display: none;
+  }
+  .paper {
+    padding: 25px;
+  }
+  .breadcrumb > span,
+  .breadcrumb > svg {
+    display: none;
+  }
+}
+
+/* Qwriter 0.2 — calmer navigation, readable controls, deliberate writing space. */

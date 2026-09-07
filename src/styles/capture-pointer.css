@@ -1,0 +1,103 @@
+.annotation-surface {
+  position: relative;
+  flex-shrink: 0;
+}
+.annotation-surface.has-color-picker .screenshots-magnifier {
+  display: none;
+}
+.capture-window-target {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  border: 1px solid #94b397;
+  background: #7fa9870b;
+  box-shadow: inset 0 0 0 1px #ffffff40;
+}
+.capture-window-target > span {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: #21382ee8;
+  color: #f0f5ec;
+  font-size: 11px;
+  max-width: calc(100% - 16px);
+}
+.capture-color-loupe {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  width: 172px;
+  padding: 6px;
+  background: var(--paper);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--overlay-shadow);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.capture-loupe-pixels {
+  height: 64px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
+  background: var(--side);
+}
+.capture-loupe-pixels canvas {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  display: block;
+}
+.capture-loupe-pixels::before,
+.capture-loupe-pixels::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  background: #719f77;
+  box-shadow: 0 0 0 1px #ffffff66;
+}
+.capture-loupe-pixels::before {
+  left: 50%;
+  width: 1px;
+  height: 100%;
+}
+.capture-loupe-pixels::after {
+  top: 50%;
+  height: 1px;
+  width: 100%;
+}
+.capture-color-value {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 7px 3px 4px;
+  font-weight: 600;
+}
+.capture-color-value i {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+.capture-color-loupe small {
+  display: block;
+  margin: 3px;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.capture-color-feedback {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--paper);
+  font-size: 12px;
+  pointer-events: none;
+}

@@ -1,0 +1,16 @@
+Qwriter capture and media additions
+
+react-screenshots 0.5.22 — nashaofu — MIT (react-screenshots.txt)
+idb 8.0.3 — Jake Archibald — ISC (idb.txt)
+fflate 0.8.3 — Arjun Barrett — MIT (fflate.txt)
+Tesseract.js and tesseract.js-core 7.0.0 — Apache-2.0 (tesseract.txt; also /ocr/LICENSE-TESSERACT and /ocr/core/LICENSE)
+
+OCR resources are bundled locally using @tesseract.js-data/eng and
+@tesseract.js-data/chi_sim 1.0.0 packages. These package wrappers declare MIT;
+the upstream Tesseract tessdata language resources use Apache-2.0.
+Sources: https://github.com/naptha/tesseract.js
+         https://github.com/tesseract-ocr/tessdata
+
+Native capture uses XCap and Tauri's official plugins. Dependency versions
+and licenses are recorded in Cargo.lock and their crate manifests.
+See docs/CAPTURE-MEDIA.md for integration choices and support boundaries.

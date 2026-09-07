@@ -1,0 +1,182 @@
+.writing-canvas {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  isolation: isolate;
+}
+.writing-canvas .paper-scroll {
+  min-height: 0;
+  min-width: 0;
+}
+.paragraph-navigation {
+  --rail-inset: 8px;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.paragraph-rail {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: var(--rail-inset);
+  max-height: calc(100% - 32px);
+  width: 34px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  pointer-events: auto;
+  padding: 3px 1px;
+}
+.paragraph-rail::-webkit-scrollbar {
+  display: none;
+}
+.paragraph-rail .paragraph-stop {
+  border: 0;
+  border-radius: 4px;
+  margin: 0;
+  padding: 0;
+  width: 32px;
+  height: 14px;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: transparent;
+  box-shadow: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.paragraph-stop > span {
+  height: 2px;
+  width: calc(var(--mark-width) * 0.5);
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.34;
+  transform-origin: left center;
+  transition:
+    width 180ms ease,
+    opacity 180ms ease,
+    transform 180ms ease,
+    background 180ms ease;
+}
+.paragraph-stop.is-heading > span {
+  opacity: 0.58;
+}
+.paragraph-stop.is-current > span {
+  width: 14px;
+  opacity: 1;
+  background: var(--green);
+}
+.paragraph-rail:is(:hover, :focus-within) .paragraph-stop > span {
+  width: var(--mark-width);
+  opacity: 0.58;
+}
+.paragraph-rail:is(:hover, :focus-within) .paragraph-stop.is-current > span {
+  width: 28px;
+  opacity: 1;
+}
+.paragraph-stop:has(+ .is-preview) > span,
+.paragraph-stop.is-preview + .paragraph-stop > span {
+  transform: scaleX(1.1);
+  opacity: 0.75;
+}
+.paragraph-rail .paragraph-stop:is(.is-preview, :focus-visible) > span {
+  width: 30px;
+  opacity: 1;
+  background: var(--text);
+}
+.paragraph-stop:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 1px;
+}
+.paragraph-peek {
+  position: absolute;
+  left: calc(var(--rail-inset) + 44px);
+  width: min(340px, calc(100% - var(--rail-inset) - 61px));
+  max-height: calc(100% - 16px);
+  overflow: auto;
+  scrollbar-width: thin;
+  padding: 16px 18px 13px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+  color: var(--text);
+  box-shadow:
+    0 10px 32px #17251d14,
+    0 2px 7px #17251d08;
+  pointer-events: auto;
+  animation: paragraph-peek-in 170ms ease-out both;
+  font-family: var(--ui-font);
+  font-size: 12px;
+  line-height: 1.8;
+}
+.paragraph-peek-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 10px;
+  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.paragraph-peek strong {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  font-weight: 600;
+}
+.paragraph-peek p {
+  margin: 5px 0 9px;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.paragraph-peek-hint {
+  font-size: 10px;
+  color: var(--muted);
+}
+.dark .paragraph-peek {
+  box-shadow: 0 12px 36px #0004;
+}
+@keyframes paragraph-peek-in {
+  from {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@media (pointer: coarse) {
+  .paragraph-rail .paragraph-stop {
+    height: 28px;
+  }
+  .paragraph-peek-hint {
+    display: none;
+  }
+}
+@media (max-width: 1200px) {
+  .writing-canvas.has-paragraph-rail .paper {
+    padding-left: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .paragraph-stop > span {
+    transition: none;
+  }
+  .paragraph-peek {
+    animation: none;
+  }
+  .writing-canvas .paper-scroll {
+    scroll-behavior: auto;
+  }
+}

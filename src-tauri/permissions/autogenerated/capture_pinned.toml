@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-capture-pinned"
+description = "Enables the capture_pinned command without any pre-configured scope."
+commands.allow = ["capture_pinned"]
+
+[[permission]]
+identifier = "deny-capture-pinned"
+description = "Denies the capture_pinned command without any pre-configured scope."
+commands.deny = ["capture_pinned"]

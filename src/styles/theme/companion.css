@@ -1,0 +1,169 @@
+.agent-panel {
+  width: 326px;
+}
+.agent-header {
+  padding: 0 22px;
+  height: 54px;
+}
+.agent-header > span {
+  font-size: 13px;
+  gap: 9px;
+}
+.agent-tabs {
+  margin: 0 22px;
+  gap: 27px;
+}
+.agent-tabs button {
+  font-size: 12px;
+  padding: 13px 0;
+}
+.agent-tabs .chosen {
+  border-bottom-width: 2px;
+}
+.agent-content {
+  padding: 32px 22px 16px;
+}
+.companion-symbol {
+  width: 62px;
+  height: 62px;
+  border-radius: 21px;
+  margin: 7px auto 25px;
+  outline-color: #94a77f30;
+  box-shadow: 0 8px 28px #537c3010;
+  background: radial-gradient(circle at 30% 20%, var(--paper), var(--tint));
+}
+.companion-symbol span {
+  font-size: 18px;
+}
+.agent-content h2 {
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  margin: 0 0 13px;
+}
+.agent-description {
+  font-size: 12px;
+  line-height: 1.9;
+  margin-bottom: 26px;
+}
+.quick-actions {
+  gap: 9px;
+}
+.quick-actions button {
+  font-size: 12px;
+  padding: 12px 10px;
+  border-color: transparent;
+  box-shadow: 0 1px 4px #304a1910;
+}
+.quick-actions button:hover {
+  box-shadow: 0 3px 10px #304a1915;
+  background: var(--hover);
+}
+.context-card {
+  border-style: dashed;
+  margin-top: 26px;
+  padding: 14px;
+  border-radius: 9px;
+}
+.context-card > div {
+  font-size: 11px;
+}
+.context-card label {
+  font-size: 10px;
+}
+.context-card p {
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 13px 0 6px;
+}
+.context-card small {
+  font-size: 10px;
+  line-height: 1.7;
+  display: block;
+}
+.agent-note {
+  font-size: 11px;
+  gap: 13px;
+  margin: 24px 6px 8px;
+}
+.composer-area {
+  padding: 12px 18px 10px;
+  background: linear-gradient(transparent, var(--panel) 15%);
+}
+.writing-mode {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  padding: 0 3px;
+}
+.writing-mode select {
+  font-size: 11px;
+  color: var(--green);
+  padding: 4px 1px;
+  cursor: pointer;
+}
+.composer {
+  padding: 13px;
+  border-color: #acb99c80;
+  border-radius: 12px;
+  box-shadow: 0 3px 14px #31502008;
+}
+.composer:focus-within {
+  border-color: #879a73;
+  box-shadow: 0 0 0 3px #9ab58012;
+}
+.composer textarea {
+  font-size: 12px;
+  height: 65px;
+}
+.composer > div > span {
+  font-size: 9px;
+}
+.composer button {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+.model-selector {
+  font-size: 11px;
+  margin-top: 8px;
+}
+.model-selector > span:nth-child(2) {
+  font-size: 10px;
+}
+.loading {
+  font-size: 12px;
+  padding: 9px 0;
+}
+.loading button {
+  font-size: 11px;
+}
+.answer {
+  margin-top: 22px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 3px 14px #223d1106;
+}
+.answer-label {
+  font-size: 11px;
+  gap: 7px;
+}
+.answer pre {
+  font-size: 13px;
+  line-height: 1.9;
+}
+.answer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.answer-actions button {
+  font-size: 11px;
+}
+.answer small {
+  font-size: 10px;
+  line-height: 1.7;
+  margin-top: 10px;
+}

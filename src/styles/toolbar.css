@@ -1,0 +1,292 @@
+/* A compact writing workbench. Groups reflow against the editor, not the screen. */
+.editor-workbench {
+  position: relative;
+  z-index: 6;
+  flex: 0 0 auto;
+  container-type: inline-size;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 10px 24px;
+  color: var(--muted);
+}
+.toolbar-cluster {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.toolbar-divider {
+  height: 15px;
+  width: 1px;
+  background: var(--line);
+  margin: 0 6px;
+  flex: 0 0 auto;
+}
+.utility-controls {
+  margin-left: auto;
+}
+.edit-tool {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: 7px;
+  position: relative;
+}
+.edit-tool.is-active {
+  background: var(--tint);
+  color: var(--green);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--green) 12%, transparent);
+}
+.edit-tool.is-active::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  width: 8px;
+  bottom: 3px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.edit-tool:disabled {
+  opacity: 0.3;
+}
+.block-picker,
+.size-picker {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  border-radius: 7px;
+  color: var(--text);
+}
+.block-picker:hover,
+.size-picker:hover {
+  background: var(--hover);
+}
+.size-picker {
+  font-variant-numeric: tabular-nums;
+}
+.block-picker svg,
+.size-picker svg {
+  pointer-events: none;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.font-toggle {
+  gap: 6px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  color: var(--green);
+  background: color-mix(in srgb, var(--tint) 25%, transparent);
+}
+.serif-sample {
+  font-family: "Source Serif 4 Variable", serif;
+  font-size: 17px;
+}
+.sans-sample {
+  font-family: "Inter Variable", sans-serif;
+  font-size: 15px;
+}
+.font-toggle-label {
+  font-size: 10px;
+  white-space: nowrap;
+}
+.toolbar-disclosure {
+  height: 30px;
+  padding: 0 8px;
+  gap: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.toolbar-disclosure[aria-expanded="true"] {
+  background: var(--tint);
+  color: var(--green);
+}
+.editor-popover {
+  position: absolute;
+  inset-inline-end: 16px;
+  top: calc(100% + 8px);
+  width: min(360px, calc(100cqw - 24px));
+  max-height: min(440px, var(--tools-max-height, calc(100dvh - 235px)));
+  overflow-y: auto;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 12px;
+  box-shadow:
+    0 16px 45px #18271020,
+    0 3px 8px #18271009;
+  animation: tools-appear 0.16s ease-out;
+}
+.popover-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  padding: 0 4px 8px;
+}
+.popover-heading button {
+  padding: 4px;
+}
+.insert-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+.insert-grid > button {
+  padding: 12px 8px;
+  text-align: left;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 9px;
+  border-radius: 8px;
+}
+.insert-grid svg {
+  color: var(--green);
+  margin-top: 2px;
+}
+.insert-grid strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+}
+.insert-grid small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.7;
+  margin-top: 3px;
+}
+.popover-bottom {
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 5px;
+}
+.popover-bottom button {
+  font-size: 10px;
+  color: var(--green);
+  padding: 7px 5px;
+}
+.reading-option {
+  display: flex;
+  width: 100%;
+  padding: 12px 8px;
+  text-align: left;
+  gap: 12px;
+}
+.reading-option > span {
+  flex: 1;
+}
+.reading-option strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+}
+.reading-option small {
+  display: block;
+  font-size: 10px;
+  margin-top: 4px;
+}
+.reading-option[aria-pressed="true"] {
+  background: var(--tint);
+  color: var(--green);
+}
+.toolbar-line-height {
+  display: flex;
+  gap: 10px;
+  padding: 16px 8px 4px;
+  align-items: center;
+  font-size: 11px;
+}
+.toolbar-line-height input {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--green);
+}
+.toolbar-line-height > span {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.popover-footnote {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 15px 8px 0;
+}
+.shortcut-list {
+  padding: 0 6px;
+}
+.shortcut-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 11px;
+  padding: 8px 0;
+}
+.shortcut-list kbd {
+  color: var(--muted);
+  font: 10px var(--ui-font);
+}
+.shortcut-list p {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.table-context,
+.code-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 24px 9px;
+  color: var(--green);
+  background: color-mix(in srgb, var(--tint) 38%, var(--paper));
+  font-size: 10px;
+  animation: tools-appear 0.16s ease-out;
+}
+.table-context > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 6px;
+}
+.table-context button {
+  font-size: 10px;
+  padding: 5px 7px;
+}
+.code-context label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.code-context input {
+  border-bottom: 1px solid var(--line);
+  font:
+    11px Consolas,
+    monospace;
+  width: 150px;
+  padding: 4px;
+}
+.source-toolbar-note {
+  font-size: 10px;
+  color: var(--muted);
+  padding: 1px 24px 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}

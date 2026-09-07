@@ -1,0 +1,14 @@
+{
+  "identifier": "capture",
+  "description": "Local quick capture and screenshot window; no AI, credentials, Git or document library access.",
+  "windows": ["capture"],
+  "permissions": [
+    "core:event:allow-listen", "core:event:allow-unlisten",
+    "allow-capture-open", "allow-capture-take", "allow-capture-clipboard", "allow-capture-screens", "allow-capture-release", "allow-capture-window",
+    "allow-capture-insert", "allow-capture-pin", "allow-capture-shortcut-errors",
+    "allow-media-pick", "allow-media-import", "allow-media-asset", "allow-media-path", "allow-media-export", "allow-open-external",
+    "allow-cards-list", "allow-card-save",
+    "clipboard-manager:allow-write-text", "clipboard-manager:allow-write-image",
+    "core:resources:allow-close", "core:image:allow-from-bytes"
+  ]
+}

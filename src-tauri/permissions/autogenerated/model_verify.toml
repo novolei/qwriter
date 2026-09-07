@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-model-verify"
+description = "Enables the model_verify command without any pre-configured scope."
+commands.allow = ["model_verify"]
+
+[[permission]]
+identifier = "deny-model-verify"
+description = "Denies the model_verify command without any pre-configured scope."
+commands.deny = ["model_verify"]

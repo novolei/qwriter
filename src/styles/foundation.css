@@ -1,0 +1,102 @@
+:root {
+  font-family: Inter, "Segoe UI", "Microsoft YaHei", sans-serif;
+  color: #363a34;
+  background: #f8f7f3;
+  font-synthesis: none;
+  font-size: 13px;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+button {
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 6px;
+  padding: 7px;
+}
+button:hover {
+  background: var(--hover);
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #72927a;
+  outline-offset: 2px;
+}
+input,
+textarea,
+select {
+  color: inherit;
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+button svg {
+  flex-shrink: 0;
+}
+input {
+  min-width: 0;
+}
+small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.app {
+  --bg: #f8f7f3;
+  --side: #f0efea;
+  --panel: #f7f6f2;
+  --paper: #fdfcf9;
+  --line: #e5e5dc;
+  --muted: #92968a;
+  --text: #363a34;
+  --green: #45664e;
+  --hover: #e8ebe2;
+  --tint: #e6ebdf;
+  background: var(--bg);
+  color: var(--text);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.app.dark {
+  --bg: #20251f;
+  --side: #242a23;
+  --panel: #252a24;
+  --paper: #252a24;
+  --line: #3b4239;
+  --muted: #959e90;
+  --text: #e0e2d7;
+  --green: #b0caa0;
+  --hover: #343d30;
+  --tint: #384432;
+}
+.alpha {
+  font-size: 8px;
+  letter-spacing: 1px;
+  font-weight: 500;
+  border: 1px solid var(--line);
+  padding: 3px 4px;
+  border-radius: 3px;
+  color: var(--muted);
+  margin-left: 2px;
+}

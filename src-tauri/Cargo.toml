@@ -1,0 +1,67 @@
+[package]
+name = "qwriter"
+version = "0.2.0"
+description = "A quiet place for your next great idea"
+edition = "2021"
+
+[lib]
+name = "qwriter_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset", "image-png", "tray-icon"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+tokio = { version = "1", features = ["macros", "time", "net"] }
+tokio-util = "0.7"
+futures-util = "0.3"
+git2 = { version = "0.21", default-features = false, features = ["vendored-libgit2"] }
+tauri-specta = { version = "=2.0.0-rc.25", features = ["typescript"] }
+specta = { version = "=2.0.0-rc.25", features = ["derive", "serde_json"] }
+specta-typescript = "=0.0.12"
+thiserror = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-opener = "2"
+sha2 = "0.10"
+uuid = { version = "1", features = ["v4"] }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
+infer = "0.19"
+scraper = "0.27"
+
+[dev-dependencies]
+tempfile = "3"
+
+[target.'cfg(any(target_os = "windows", target_os = "macos"))'.dependencies]
+keyring = "4.2"
+tauri-plugin-global-shortcut = "2"
+xcap = "0.9.8"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+core-graphics = "0.25"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+windows = { version = "0.62", features = ["Win32_UI_WindowsAndMessaging"] }
+
+# Screenshot pixel conversion/compression must be responsive in the preview build too.
+[profile.dev.package.xcap]
+opt-level = 3
+[profile.dev.package.image]
+opt-level = 3
+[profile.dev.package.png]
+opt-level = 3
+[profile.dev.package.fdeflate]
+opt-level = 3
+[profile.dev.package.flate2]
+opt-level = 3
+[profile.dev.package.miniz_oxide]
+opt-level = 3

@@ -1,0 +1,6 @@
+{
+  "identifier": "pin",
+  "description": "Read-only pinned reference image; no clipboard reads or writable library access.",
+  "windows": ["pin"],
+  "permissions": ["core:event:allow-listen", "core:event:allow-unlisten", "allow-capture-pinned", "allow-capture-window", "allow-media-path", "allow-media-asset", "allow-media-export"]
+}

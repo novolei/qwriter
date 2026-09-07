@@ -1,0 +1,239 @@
+.connection-section {
+  margin: 0 0 24px;
+}
+.connection-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.connection-section-title > span {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.connection-section-title h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.connection-section-title > small {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--muted);
+}
+.connection-advanced {
+  margin-top: 12px;
+}
+.connection-advanced summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--muted);
+  list-style: none;
+  border-radius: 5px;
+  padding: 6px 0;
+}
+.connection-advanced summary::-webkit-details-marker {
+  display: none;
+}
+.connection-advanced summary > span {
+  margin-left: auto;
+  max-width: 48%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+}
+.connection-advanced summary > svg {
+  flex-shrink: 0;
+  transition: transform 0.18s ease;
+}
+.connection-advanced[open] summary > svg {
+  transform: rotate(180deg);
+}
+.connection-advanced > div {
+  padding: 0 14px 8px;
+  border-left: 1px solid var(--line);
+  margin: 8px 0 10px 6px;
+  animation: dialog-in 0.18s ease-out;
+}
+.connection-advanced small {
+  color: var(--muted);
+  font-size: 10px;
+}
+.connection-field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.modal .connection-field-grid > label {
+  min-width: 0;
+  margin: 0;
+  gap: 8px;
+}
+.modal .connection-field-grid > label > input,
+.modal .connection-field-grid > label > .ui-select-trigger {
+  margin-top: 0;
+  min-height: 40px;
+  padding: 9px 12px;
+  line-height: 20px;
+}
+.connection-key-input {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.connection-key-input > svg {
+  position: absolute;
+  left: 13px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.connection-key-input > input {
+  padding-left: 38px;
+  padding-right: 44px;
+}
+.connection-key-input > button {
+  position: absolute;
+  right: 5px;
+  color: var(--muted);
+  width: 34px;
+  height: 32px;
+}
+.connection-help {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.connection-models {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+.connection-discover {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: space-between;
+}
+.connection-discover .connection-section-title {
+  margin-bottom: 0;
+}
+.connection-discover strong {
+  font-size: 11px;
+  font-weight: 500;
+}
+.connection-discover small {
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+.connection-action {
+  flex-shrink: 0;
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--green);
+  padding: 10px 12px;
+  font-size: 11px;
+}
+.connection-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  margin-top: 16px;
+  animation: dialog-in 0.18s ease-out;
+}
+.connection-result > svg {
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.connection-result strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.connection-result small {
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+.connection-result.is-success {
+  background: var(--tint);
+}
+.connection-result.is-success > svg {
+  color: var(--green);
+}
+.connection-result.is-error > svg {
+  color: #af7155;
+}
+.dark .connection-result.is-error > svg {
+  color: #d9a78a;
+}
+.connection-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.connection-footer > small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.connection-footer > button {
+  flex-shrink: 0;
+}
+.credential-fields {
+  margin: 26px 0;
+}
+.credential-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.credential-actions button {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  color: var(--green);
+  font-size: 10px;
+  padding: 6px 8px;
+}
+.credential-error {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--text);
+}
+@media (max-width: 520px) {
+  .connection-discover {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .connection-field-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .connection-advanced summary > span {
+    max-width: 34%;
+  }
+}
