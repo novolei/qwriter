@@ -1,5 +1,7 @@
 # Qwriter 0.2
 
+测试安装包：在 [GitHub Actions · Test installers](https://github.com/novolei/qwriter/actions/workflows/test-installers.yml) 下载成功运行的 Windows / macOS 产物。详细构建步骤、WebView2 依赖与 macOS 签名限制见 [测试版分发](docs/TEST-DISTRIBUTION.md)。
+
 一间安静、可配置字体的 AI 写作书房。Tauri 2 + Rust + React + TypeScript + Tiptap。
 
 ## 开发与构建
