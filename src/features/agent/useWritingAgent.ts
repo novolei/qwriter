@@ -14,9 +14,11 @@ import {
   type AgentOutput,
   type AgentNote,
   type AgentDraft,
+  type AgentSession,
 } from "../../shared/ipc/bindings";
 import type { Doc, Profile } from "../../shared/types";
 import { connectionIssue } from "../models/connection";
+import { useHarness } from "./useHarness";
 
 type Props = {
   docs: Doc[];
@@ -30,6 +32,7 @@ type Props = {
 };
 type Status = "idle" | "running" | "complete" | "cancelled" | "limit" | "error";
 export function useWritingAgent(props: Props) {
+  const harness = useHarness(props.config, props.current.id);
   const latest = useRef(props);
   latest.current = props;
   const request = useRef("");
@@ -76,7 +79,18 @@ export function useWritingAgent(props: Props) {
     return notes;
   }
   async function run() {
-    if (request.current || !prompt.trim()) return;
+    if (request.current || !prompt.trim() || harness.loading) return;
+    if (
+      harness.images.length &&
+      harness.options.capabilities.vision !== "supported"
+    ) {
+      setError(t("请先确认模型支持图片理解，再发送图片"));
+      return;
+    }
+    if (harness.options.capabilities.tools === "unsupported") {
+      setError(t("此模型标记为不支持工具调用，请切换模型"));
+      return;
+    }
     if (!isTauri()) {
       setError(t("写作 Agent 需要桌面版连接模型。可先配置模型与参考文稿。"));
       return;
@@ -114,7 +128,12 @@ export function useWritingAgent(props: Props) {
       const output = await commands.agentRun(
         id,
         props.config,
-        { instruction: prompt, notes, language: language() },
+        {
+          instruction: prompt,
+          notes,
+          language: language(),
+          harness: harness.options,
+        },
         channel,
       );
       if (mounted.current && request.current === id) {
@@ -122,6 +141,21 @@ export function useWritingAgent(props: Props) {
         setResult(output);
         setStatus(output.status);
         setFollowup(false);
+      }
+      try {
+        await commands.agentSessionSave({
+          id,
+          instruction: prompt,
+          model: props.config.model,
+          documentId: props.current.id,
+          createdAt: Date.now(),
+          output,
+        });
+      } catch {
+        if (mounted.current)
+          setError(
+            t("任务结果已保留在当前面板，但历史保存失败，请及时另存文稿。"),
+          );
       }
     } catch (e) {
       if (mounted.current && request.current === id) {
@@ -200,6 +234,20 @@ export function useWritingAgent(props: Props) {
     props.notify("AI 内容已另存为独立文稿");
   }
   return {
+    harness,
+    resume: (session: AgentSession) => {
+      if (request.current) return;
+      previousDraft.current = session.output.draft;
+      setResult(session.output);
+      setStatus(session.output.status);
+      setBase(null);
+      setEvents([]);
+      setReferences([]);
+      setError("");
+      setReview(false);
+      setFollowup(!!session.output.draft);
+      setPrompt(session.output.draft ? "" : session.instruction);
+    },
     status,
     busy,
     prompt,

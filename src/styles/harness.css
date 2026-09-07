@@ -1,0 +1,301 @@
+.capability-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 9px 0;
+}
+.capability-badges span {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 3px 6px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+.capability-badges span[data-ready="true"] {
+  background: var(--tint);
+  border-color: transparent;
+  color: var(--green);
+}
+.capability-editor p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.capability-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px 14px;
+}
+.capability-fields label {
+  margin-top: 8px;
+  min-width: 0;
+}
+.harness-controls {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+.harness-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-start;
+}
+.harness-actions button,
+.memory-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: var(--control-radius);
+  font-size: 11px;
+}
+.harness-actions button {
+  color: var(--green);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 7px 8px;
+}
+.harness-controls small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.harness-memory-toggle,
+.memory-modal .memory-archive-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 10px 0 0;
+}
+.harness-options {
+  background: var(--tint);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
+  animation: harness-reveal 150ms ease-out;
+}
+.harness-options p {
+  margin: 0 0 12px;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.harness-options label {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 11px;
+}
+.harness-options .ui-select-trigger {
+  width: 126px;
+  flex-shrink: 0;
+  padding: 7px 10px;
+  font-size: 11px;
+}
+.harness-options > button {
+  margin: 8px 0;
+  font-size: 11px;
+}
+.agent-image-strip {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+.agent-image-strip > div {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.agent-image-strip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 7px;
+}
+.agent-image-strip button {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  display: flex;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 3px;
+  border-radius: 50%;
+}
+.writing-agent-content {
+  min-height: 100px;
+}
+.agent-workbench {
+  min-height: 0;
+  flex-shrink: 1;
+  max-height: 56%;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.agent-workbench:hover,
+.agent-workbench:focus-within {
+  scrollbar-color: color-mix(in srgb, var(--muted) 30%, transparent) transparent;
+}
+.agent-workbench::-webkit-scrollbar {
+  width: 4px;
+}
+.agent-workbench::-webkit-scrollbar-track,
+.agent-workbench::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+.agent-workbench:hover::-webkit-scrollbar-thumb,
+.agent-workbench:focus-within::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--muted) 30%, transparent);
+  border-radius: 4px;
+}
+.agent-workbench::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+}
+.agent-memory-proposals {
+  padding: 16px 0;
+}
+.agent-memory-proposals h3 {
+  font-size: 12px;
+}
+.agent-memory-proposals button {
+  width: 100%;
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  text-align: left;
+  margin-bottom: 8px;
+}
+.agent-memory-proposals strong {
+  font-size: 12px;
+}
+.agent-memory-proposals small {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.agent-memory-proposals span {
+  color: var(--green);
+  font-size: 11px;
+}
+.memory-modal .modal-heading {
+  min-height: 76px;
+}
+.memory-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+.memory-list {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+}
+.memory-list article {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface, var(--bg));
+}
+.memory-list .memory-open {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  padding: 8px;
+  text-align: left;
+}
+.memory-open strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 550;
+}
+.memory-open p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.75;
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+.memory-open small,
+.memory-modal .modal-body > small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+}
+.memory-empty {
+  display: grid;
+  justify-items: center;
+  padding: 42px 18px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.memory-editor label {
+  display: grid;
+  gap: 8px;
+}
+.memory-editor textarea {
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.75;
+  resize: vertical;
+  min-height: 120px;
+}
+.memory-editor-options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+.memory-editor > small {
+  display: block;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+@keyframes harness-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-height: 760px) {
+  .agent-workbench {
+    max-height: 65%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .harness-options {
+    animation: none;
+  }
+}
+.agent-history-link {
+  display: block;
+  margin: 0 0 8px auto;
+  padding: 4px 6px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.settings-modal.memory-modal .modal-body > p:first-child {
+  display: block;
+}

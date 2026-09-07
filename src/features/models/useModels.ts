@@ -7,6 +7,7 @@ import {
   serializeWorkspace,
 } from "./persistence";
 import { presets } from "./presets";
+import { modelCapabilities } from "./capabilities";
 import type { ModelWorkspace, PoolModel, Provider } from "./types";
 import { useProviderCredentials } from "./useProviderCredentials";
 import type { ModelBackup } from "./backup/format";
@@ -46,6 +47,7 @@ export function useModels() {
       protocol: provider?.protocol ?? "openai",
       apiKey: provider ? credentials.value(provider) : "",
       model: model.model,
+      capabilities: modelCapabilities(model, provider),
     };
   }
   const profiles = workspace.models.filter((m) => m.enabled).map(resolve);

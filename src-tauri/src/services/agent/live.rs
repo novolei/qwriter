@@ -39,11 +39,13 @@ async fn deepseek_live_writing_flow() -> AppResult<()> {
         instruction: "先搜索与雨后有关的参考文稿，再阅读原文，将其写成一篇不超过 150 字、包含二级标题的中文散文。保留原文的纸船意象，以 propose_draft 返回草稿。".into(),
         notes: vec![AgentNote { id: "test-rain".into(), title: "雨后的窗台".into(), markdown: "雨停后，窗台上停着一只蓝色纸船。叶尖有一滴水，折射着晚霞。屋里还留着热茶的香气。".into() }],
         language: "zh-CN".into(),
+        harness: None,
     }, CancellationToken::new(), |event| {
         match event {
             AgentEvent::Tool { name, success, .. } => println!("LIVE tool: {name}; success={success}"),
             AgentEvent::Thinking { round } => println!("LIVE round: {round}"),
             AgentEvent::Started => println!("LIVE writing task started"),
+            _ => {},
         }
         Ok(())
     }).await?;

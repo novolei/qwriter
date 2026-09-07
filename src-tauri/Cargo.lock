@@ -3921,6 +3921,7 @@ dependencies = [
 name = "qwriter"
 version = "0.2.0"
 dependencies = [
+ "base64 0.22.1",
  "core-graphics",
  "futures-util",
  "git2",

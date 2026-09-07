@@ -18,6 +18,7 @@ pub fn run() {
             app.manage(services::library::LibraryLock::default());
             app.manage(services::streaming::Requests::default());
             app.manage(services::agent::AgentRequests::default());
+            app.manage(services::knowledge::KnowledgeLock::default());
             app.manage(services::credentials::CredentialLock::default());
             app.manage(services::git::GitLock::default());
             app.manage(services::capture::CaptureLock::default());

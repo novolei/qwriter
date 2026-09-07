@@ -3,6 +3,7 @@ pub mod capture;
 pub mod cards;
 pub(crate) mod credentials;
 pub(crate) mod git;
+pub mod knowledge;
 pub(crate) mod library;
 pub mod media;
 pub(crate) mod provider;

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { t } from "../../shared/i18n/index";
 import { Modal } from "../../shared/ui/Modal";
 import type { useModels } from "./useModels";
+import { CapabilityBadges } from "./CapabilityEditor";
+import { modelCapabilities } from "./capabilities";
 
 export function ModelSwitcher({
   store,
@@ -96,6 +98,7 @@ export function ModelSwitcher({
                         <div>
                           <strong>{m.name || m.model}</strong>
                           <small>{m.model}</small>
+                          <CapabilityBadges value={modelCapabilities(m, p)} />
                         </div>
                         {m.id === store.config.id && <Check size={15} />}
                       </Command.Item>

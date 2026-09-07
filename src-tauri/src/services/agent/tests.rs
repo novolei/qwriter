@@ -19,6 +19,7 @@ fn input() -> AgentInput {
     AgentInput {
         instruction: "Write a short story from the attached note".into(),
         language: "en".into(),
+        harness: None,
         notes: vec![types::AgentNote {
             id: "note-1".into(),
             title: "Garden".into(),
@@ -138,7 +139,15 @@ fn openai_agent_reads_then_proposes_without_writing() {
     assert!(!requests[0].to_string().contains("Private reference"));
     assert!(requests[2].to_string().contains("Private reference"));
     assert_eq!(requests[1]["messages"][3]["role"], "tool");
-    assert_eq!(events.lock().unwrap().len(), 7);
+    assert_eq!(
+        events
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|e| matches!(e, AgentEvent::Tool { .. }))
+            .count(),
+        3
+    );
 }
 
 #[test]
@@ -197,4 +206,197 @@ fn rejects_truncation_and_malformed_tool_arguments() {
     let mut response = call("read_document", json!({"id":"note-1"}));
     response["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"] = json!("not JSON");
     assert!(transport::parse(response, false).is_err());
+}
+
+#[test]
+fn harness_preserves_reasoning_and_reads_memory_before_proposing() {
+    let mut first = call("search_memory", json!({"query":"concise"}));
+    first["choices"][0]["message"]["reasoning_content"] = json!("opaque provider state");
+    let (url, server) = server(vec![
+        first,
+        call("read_memory", json!({"id":"m1"})),
+        call(
+            "propose_memory",
+            json!({"title":"Tone","content":"Use concrete short sentences.","kind":"preference","source":"User request"}),
+        ),
+        call(
+            "propose_draft",
+            json!({"title":"Draft","markdown":"A concise draft.","summary":"Used the saved preference."}),
+        ),
+    ]);
+    let mut input = input();
+    input.harness = Some(options::HarnessOptions {
+        memory_enabled: true,
+        thinking: options::ThinkingMode::On,
+        capabilities: options::ModelCapabilities {
+            reasoning: options::ReasoningAdapter::Deepseek,
+            ..Default::default()
+        },
+        ..Default::default()
+    });
+    let memory = crate::services::knowledge::MemoryEntry {
+        id: "m1".into(),
+        title: "Style".into(),
+        content: "Keep it concise".into(),
+        kind: "preference".into(),
+        document_id: String::new(),
+        source: "User".into(),
+        archived: false,
+        revision: 1,
+        updated_at: 1,
+    };
+    let output = tauri::async_runtime::block_on(run_with_context(
+        config(url, "openai"),
+        input,
+        CancellationToken::new(),
+        context::RunContext {
+            images: vec![],
+            memories: vec![memory],
+        },
+        |_| Ok(()),
+    ))
+    .unwrap();
+    assert_eq!(output.memories.len(), 1);
+    assert_eq!(output.memory_read_ids, vec!["m1"]);
+    assert!(output.draft.is_some());
+    let requests = server.join().unwrap();
+    assert_eq!(requests[0]["thinking"]["type"], "enabled");
+    assert_eq!(
+        requests[1]["messages"][2]["reasoning_content"],
+        "opaque provider state"
+    );
+    assert!(requests[0]["tools"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|v| v["function"]["name"] == "propose_memory"));
+}
+
+#[test]
+fn images_use_correct_provider_blocks_and_unknown_capabilities_fail_closed() {
+    let mut input = input();
+    input.harness = Some(options::HarnessOptions {
+        image_ids: vec!["example.png".into()],
+        ..Default::default()
+    });
+    assert!(validate(&input, &config("http://localhost:1".into(), "openai")).is_err());
+    let context = context::RunContext {
+        images: vec!["jpeg-base64".into()],
+        memories: vec![],
+    };
+    let openai = context::first_message(&input, &context, false);
+    let anthropic = context::first_message(&input, &context, true);
+    assert_eq!(
+        openai["content"][1]["image_url"]["url"],
+        "data:image/jpeg;base64,jpeg-base64"
+    );
+    assert_eq!(
+        anthropic["content"][1]["source"]["media_type"],
+        "image/jpeg"
+    );
+    assert!(!harness_tools::definitions(false)
+        .iter()
+        .any(|d| d["name"] == "search_memory"));
+}
+
+#[test]
+fn context_compaction_preserves_protocol_pairs_and_recent_evidence() {
+    let mut messages = vec![
+        json!({"role":"user","content":"Goal"}),
+        json!({"role":"assistant","tool_calls":[{"id":"a"}],"reasoning_content":"opaque"}),
+        json!({"role":"tool","name":"read_document","tool_call_id":"a","content":"x".repeat(30000)}),
+        json!({"role":"assistant","tool_calls":[{"id":"b"}]}),
+        json!({"role":"tool","name":"read_document","tool_call_id":"b","content":"Recent evidence"}),
+    ];
+    let (tokens, compacted) = context::fit(&mut messages, 2000);
+    assert!(compacted && tokens < 2000);
+    assert_eq!(messages[1]["reasoning_content"], "opaque");
+    assert_eq!(messages[2]["tool_call_id"], "a");
+    assert_eq!(messages[4]["content"], "Recent evidence");
+    let doc = types::AgentNote {
+        id: "long".into(),
+        title: "Long".into(),
+        markdown: "文".repeat(9000),
+    };
+    let page = tools::execute("read_document", &json!({"id":"long","offset":4000}), &[doc]);
+    assert_eq!(page.value["nextOffset"], 8000);
+    assert_eq!(
+        page.value["markdown"].as_str().unwrap().chars().count(),
+        4000
+    );
+}
+
+#[test]
+fn thinking_adapters_do_not_leak_parameters_across_protocols() {
+    use options::*;
+    let mut settings = HarnessOptions {
+        thinking: ThinkingMode::On,
+        ..Default::default()
+    };
+    settings.capabilities.reasoning = ReasoningAdapter::Anthropic;
+    assert!(settings.validate("openai").is_err());
+    assert!(settings.validate("anthropic").is_ok());
+    let mut payload = json!({});
+    settings.apply_reasoning(&mut payload);
+    assert_eq!(payload["thinking"]["budget_tokens"], 4096);
+    settings.capabilities.reasoning = ReasoningAdapter::AnthropicAdaptive;
+    let mut payload = json!({});
+    settings.apply_reasoning(&mut payload);
+    assert_eq!(payload["thinking"]["type"], "adaptive");
+    assert_eq!(payload["output_config"]["effort"], "medium");
+    settings.capabilities.reasoning = ReasoningAdapter::Deepseek;
+    settings.thinking = ThinkingMode::Off;
+    let mut payload = json!({});
+    settings.apply_reasoning(&mut payload);
+    assert!(payload.get("reasoning_effort").is_none());
+    settings.thinking = ThinkingMode::Auto;
+    let mut payload = json!({});
+    settings.apply_reasoning(&mut payload);
+    assert_eq!(payload, json!({}));
+}
+
+#[test]
+fn local_image_preparation_and_large_image_followup_work() {
+    use base64::Engine;
+    let root = std::env::temp_dir().join(uuid::Uuid::new_v4().to_string());
+    std::fs::create_dir_all(&root).unwrap();
+    let source = root.join("source.png");
+    image::RgbImage::from_pixel(2000, 1000, image::Rgb([40, 90, 55]))
+        .save(&source)
+        .unwrap();
+    let asset = crate::services::capture::assets::import_file(&root, &source, "fixture").unwrap();
+    let mut opts = options::HarnessOptions {
+        image_ids: vec![asset.id],
+        ..Default::default()
+    };
+    opts.capabilities.vision = options::CapabilitySupport::Supported;
+    let mut prepared = context::prepare(&root, &opts).unwrap();
+    let data = base64::engine::general_purpose::STANDARD
+        .decode(&prepared.images[0])
+        .unwrap();
+    let decoded = image::load_from_memory(&data).unwrap();
+    assert_eq!((decoded.width(), decoded.height()), (1600, 800));
+    assert_eq!(image::open(&source).unwrap().width(), 2000);
+    // Large encoded payloads must not consume the text budget or stop a tool follow-up.
+    prepared.images = vec!["A".repeat(2 * 1024 * 1024 + 1024)];
+    let mut input = input();
+    input.harness = Some(opts);
+    let (url, server) = server(vec![
+        call("read_document", json!({"id":"note-1"})),
+        call(
+            "propose_draft",
+            json!({"title":"Image note","markdown":"A green reference.","summary":"Based on the attachment."}),
+        ),
+    ]);
+    let result = tauri::async_runtime::block_on(run_with_context(
+        config(url, "openai"),
+        input,
+        CancellationToken::new(),
+        prepared,
+        |_| Ok(()),
+    ))
+    .unwrap();
+    assert!(result.draft.is_some());
+    assert_eq!(server.join().unwrap().len(), 2);
+    std::fs::remove_dir_all(root).unwrap();
 }

@@ -5,7 +5,11 @@ import type { AgentEvent, AgentOutput } from "../../shared/ipc/bindings";
 
 const mock = vi.hoisted(() => ({ run: vi.fn(), cancel: vi.fn() }));
 vi.mock("../../shared/ipc/bindings", () => ({
-  commands: { agentRun: mock.run, agentCancel: mock.cancel },
+  commands: {
+    agentRun: mock.run,
+    agentCancel: mock.cancel,
+    agentSessionSave: vi.fn().mockResolvedValue(undefined),
+  },
 }));
 vi.mock("@tauri-apps/api/core", () => ({
   isTauri: () => true,
@@ -31,6 +35,8 @@ const output: AgentOutput = {
   draft: { title: "Draft", markdown: "New text", summary: "Edited" },
   readIds: ["one"],
   rounds: 2,
+  memories: [],
+  memoryReadIds: [],
 };
 function props() {
   return {
@@ -53,12 +59,41 @@ function props() {
   };
 }
 beforeEach(() => {
+  localStorage.clear();
   mock.run.mockReset();
   mock.cancel.mockReset();
   mock.cancel.mockResolvedValue(undefined);
   mock.run.mockResolvedValue(output);
 });
 afterEach(cleanup);
+it("restores a task as reviewable history without granting permission to replace a changed document", () => {
+  const { result } = renderHook(() => useWritingAgent(props()));
+  act(() =>
+    result.current.resume({
+      id: "history",
+      instruction: "Original goal",
+      model: "model",
+      documentId: "old",
+      createdAt: 1,
+      output,
+    }),
+  );
+  expect(result.current.result?.draft?.markdown).toBe("New text");
+  expect(result.current.canApply).toBe(false);
+  expect(result.current.followup).toBe(true);
+  act(() =>
+    result.current.resume({
+      id: "history2",
+      instruction: "Unfinished goal",
+      model: "model",
+      documentId: "old",
+      createdAt: 1,
+      output: { ...output, draft: null, status: "limit" },
+    }),
+  );
+  expect(result.current.prompt).toBe("Unfinished goal");
+  expect(result.current.followup).toBe(false);
+});
 it("sends only explicitly selected references and prevents a double submission", async () => {
   const p = props();
   const { result } = renderHook(() => useWritingAgent(p));

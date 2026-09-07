@@ -5,6 +5,8 @@ import type { PoolModel, Provider } from "./types";
 import type { useModels } from "./useModels";
 import { useConnection } from "./useConnection";
 import { ConnectionStatus } from "./ConnectionStatus";
+import { CapabilityBadges, CapabilityEditor } from "./CapabilityEditor";
+import { modelCapabilities } from "./capabilities";
 
 type Store = ReturnType<typeof useModels>;
 function PoolRow({
@@ -61,6 +63,13 @@ function PoolRow({
           <Trash2 size={14} />
         </button>
       </div>
+      <CapabilityBadges value={modelCapabilities(model, provider)} />
+      <CapabilityEditor
+        value={model.capabilities}
+        onChange={(capabilities) =>
+          store.updateModel({ ...model, capabilities })
+        }
+      />
       <details className="connection-advanced">
         <summary>
           {t("名称与使用偏好")}

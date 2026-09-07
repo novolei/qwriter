@@ -16,7 +16,7 @@
 }
 .modal-heading {
   flex: 0 0 auto;
-  padding: var(--dialog-padding) var(--dialog-padding) 12px;
+  padding: 18px var(--dialog-padding) 8px;
 }
 .modal-body {
   min-height: 0;
@@ -76,12 +76,12 @@
   }
 }
 .modal-heading h2 {
-  font-size: 25px;
-  margin: 13px 0 8px;
+  font-size: 21px;
+  margin: 5px 0 0;
   letter-spacing: 0.4px;
 }
 .modal-heading > button {
-  align-self: flex-start;
+  align-self: center;
   flex-shrink: 0;
   color: var(--muted);
 }
@@ -92,7 +92,7 @@
 .modal-body > p {
   font-size: 12px;
   line-height: 1.8;
-  margin: 10px 0 22px;
+  margin: 0 0 12px;
   color: var(--muted);
 }
 .modal label {
@@ -244,4 +244,27 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font: 12px/1.8 inherit;
+}
+
+.startup-recovery {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-height: 100dvh;
+  padding: 32px;
+  text-align: center;
+  color: var(--ink);
+  background: var(--bg);
+}
+.startup-recovery h1 {
+  font-size: 21px;
+}
+.startup-recovery p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.startup-recovery button {
+  padding: 10px 20px;
+  border-radius: var(--control-radius);
 }

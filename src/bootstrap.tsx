@@ -1,5 +1,6 @@
 import { StrictMode, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
+import { StartupBoundary } from "./shared/ui/StartupBoundary";
 const App = lazy(() =>
   import("./app/App").then((module) => ({ default: module.App })),
 );
@@ -16,13 +17,15 @@ if (root) {
   import.meta.hot?.dispose(() => appRoot.unmount());
   appRoot.render(
     <StrictMode>
-      <Suspense fallback={null}>
-        {surface === "capture" || surface === "pin" ? (
-          <CaptureSurface pin={surface === "pin"} />
-        ) : (
-          <App />
-        )}
-      </Suspense>
+      <StartupBoundary>
+        <Suspense fallback={null}>
+          {surface === "capture" || surface === "pin" ? (
+            <CaptureSurface pin={surface === "pin"} />
+          ) : (
+            <App />
+          )}
+        </Suspense>
+      </StartupBoundary>
     </StrictMode>,
   );
 }

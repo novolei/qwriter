@@ -117,11 +117,12 @@ pub fn tool_reply(id: &str, name: &str, value: Value, success: bool, anthropic: 
     }
 }
 
-pub async fn request(
+pub async fn request_with_options(
     client: &reqwest::Client,
     config: &ModelConfig,
     system: &str,
     messages: &[Value],
+    options: &super::options::HarnessOptions,
 ) -> AppResult<Turn> {
     let anthropic = config.protocol == "anthropic";
     let url = endpoint(
@@ -133,7 +134,13 @@ pub async fn request(
         },
     )
     .map_err(AppError::Validation)?;
-    let mut request = client.post(url).json(&body(config, system, messages));
+    let mut payload = body(config, system, messages);
+    let extra = super::harness_tools::definitions(options.memory_enabled);
+    if let Some(tools) = payload["tools"].as_array_mut() {
+        tools.extend(extra.iter().map(|d| if anthropic { json!({"name":d["name"],"description":d["description"],"input_schema":d["parameters"]}) } else { json!({"type":"function","function":d}) }));
+    }
+    options.apply_reasoning(&mut payload);
+    let mut request = client.post(url).json(&payload);
     if anthropic {
         request = request
             .header("x-api-key", &config.api_key)

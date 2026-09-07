@@ -53,6 +53,18 @@ export function AgentTimeline({
                     : "构思与整理 · 第 {{round}} 步",
                   { round: event.round },
                 )
+              ) : event.type === "context" ? (
+                t(
+                  event.compacted
+                    ? "已整理上下文 · 约 {{used}} / {{budget}} tokens"
+                    : "上下文 · 约 {{used}} / {{budget}} tokens",
+                  { used: event.estimated_tokens, budget: event.budget },
+                )
+              ) : event.type === "plan" ? (
+                <>
+                  {t("工作计划")}
+                  <small>{event.steps.join(" · ")}</small>
+                </>
               ) : event.type === "tool" ? (
                 <>
                   {t(
@@ -64,7 +76,13 @@ export function AgentTimeline({
                           ? "检索参考文稿"
                           : event.name === "propose_draft"
                             ? "草稿已整理"
-                            : "工具未完成",
+                            : event.name === "search_memory"
+                              ? "检索本地记忆"
+                              : event.name === "read_memory"
+                                ? "已阅读记忆"
+                                : event.name === "propose_memory"
+                                  ? "记忆建议待确认"
+                                  : "工具未完成",
                   )}
                   <small title={event.detail}>
                     {event.success

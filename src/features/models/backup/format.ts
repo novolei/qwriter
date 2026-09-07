@@ -1,4 +1,5 @@
 import type { ModelWorkspace } from "../types";
+import { normalizeCapabilities } from "../capabilities";
 
 export const BACKUP_LIMIT = 2 * 1024 * 1024;
 export type ModelBackup = {
@@ -86,6 +87,9 @@ export function sanitizeWorkspace(value: unknown): ModelWorkspace {
       model,
       name: text(m.name, 512, true),
       enabled: m.enabled,
+      ...(m.capabilities
+        ? { capabilities: normalizeCapabilities(m.capabilities) }
+        : {}),
     };
   });
   const selected = text(data.selected, 128, true);

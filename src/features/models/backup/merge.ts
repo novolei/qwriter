@@ -5,7 +5,7 @@ export type DuplicatePolicy = "skip" | "copy";
 function fingerprint(workspace: ModelWorkspace, provider: Provider) {
   const models = workspace.models
     .filter((m) => m.providerId === provider.id)
-    .map((m) => JSON.stringify([m.model, m.name, m.enabled]))
+    .map((m) => JSON.stringify([m.model, m.name, m.enabled, m.capabilities]))
     .sort();
   return JSON.stringify([
     provider.kind,

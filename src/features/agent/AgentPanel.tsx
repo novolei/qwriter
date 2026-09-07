@@ -16,6 +16,10 @@ import { Review } from "../ai/Review";
 import { AgentTimeline } from "./AgentTimeline";
 import { ReferencePicker } from "./ReferencePicker";
 import type { WritingAgent } from "./useWritingAgent";
+import { HarnessControls } from "./HarnessControls";
+import { SessionHistory } from "./SessionHistory";
+import { MemoryLibrary } from "../knowledge/MemoryLibrary";
+import type { MemoryProposal } from "../../shared/ipc/bindings";
 
 type Props = {
   agent: WritingAgent;
@@ -35,6 +39,10 @@ export function AgentPanel({
 }: Props) {
   const [picker, setPicker] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [history, setHistory] = useState(false);
+  const [memory, setMemory] = useState<
+    false | { proposal?: MemoryProposal; readIds?: string[] }
+  >(false);
   const input = useRef<HTMLTextAreaElement>(null);
   const contentScroll = useRef<HTMLDivElement>(null);
   const followProgress = useRef(true);
@@ -64,7 +72,7 @@ export function AgentPanel({
             <span className="agent-intro-icon">
               <Layers2 size={24} />
             </span>
-            <span className="eyebrow">FROM IDEA TO DRAFT</span>
+            <span className="eyebrow">{t("从灵感到成稿")}</span>
             <h2>{t("把想法，写成作品")}</h2>
             <p>{t("给一个目标，带上参考。\n让创作伙伴一步步陪你完成。")}</p>
             <div className="agent-starters">
@@ -126,7 +134,7 @@ export function AgentPanel({
         )}
         {a.status === "limit" && (
           <p className="agent-explanation">
-            {t("已完成 6 步协作。请缩小任务目标后重试。")}
+            {t("已达到本次任务步骤上限，可缩小目标或调整任务设置。")}
           </p>
         )}
         {a.status === "cancelled" && (
@@ -172,7 +180,9 @@ export function AgentPanel({
                 <span>{t("本次阅读")}</span>
                 {a.result.readIds.map((id) => (
                   <small key={id}>
-                    {a.references.find((note) => note.id === id)?.title}
+                    {a.references.find((note) => note.id === id)?.title ||
+                      docs.find((doc) => doc.id === id)?.title ||
+                      t("已移除的参考文稿")}
                   </small>
                 ))}
               </div>
@@ -191,8 +201,42 @@ export function AgentPanel({
             )}
           </section>
         )}
+        {!!a.result?.memories.length && (
+          <section className="agent-memory-proposals">
+            <h3>{t("值得记住 · 待你确认")}</h3>
+            {a.result.memories.map((proposal, index) => (
+              <button key={index} onClick={() => setMemory({ proposal })}>
+                <strong>{proposal.title}</strong>
+                <small>{proposal.content.slice(0, 120)}</small>
+                <span>{t("审阅并记住")}</span>
+              </button>
+            ))}
+          </section>
+        )}
+        {!!a.result?.memoryReadIds.length && (
+          <button
+            className="agent-followup"
+            onClick={() => setMemory({ readIds: a.result!.memoryReadIds })}
+          >
+            <BookOpen size={14} /> {t("本次使用的记忆")} ·{" "}
+            {a.result.memoryReadIds.length}
+          </button>
+        )}
       </div>
       <div className="agent-workbench">
+        <button
+          className="agent-history-link"
+          onClick={() => setHistory(true)}
+          disabled={a.busy}
+        >
+          {t("写作任务历史")}
+        </button>
+        <HarnessControls
+          harness={a.harness}
+          busy={a.busy}
+          markdown={current.markdown}
+          onMemory={() => setMemory({})}
+        />
         <div className="agent-reference-heading">
           <span>
             <BookOpen size={13} />
@@ -260,7 +304,9 @@ export function AgentPanel({
           </>
         )}
         <small className="agent-disclosure">
-          {t("仅发送本次选中的参考；每个任务最多 6 步。")}
+          {t("仅发送选中的参考；本次最多 {{count}} 步。", {
+            count: a.harness.preferences.maxRounds,
+          })}
         </small>
         <div className="composer">
           <textarea
@@ -275,6 +321,15 @@ export function AgentPanel({
                 ? "告诉我，接下来想怎样打磨…"
                 : "例如：结合参考文稿，写一篇有温度的序言…",
             )}
+            onPaste={(e) => {
+              const images = Array.from(e.clipboardData.files).filter((f) =>
+                f.type.startsWith("image/"),
+              );
+              if (images.length) {
+                e.preventDefault();
+                void a.harness.pasteImages(images);
+              }
+            }}
             onKeyDown={(e) => {
               if (
                 !e.nativeEvent.isComposing &&
@@ -295,7 +350,13 @@ export function AgentPanel({
             ) : (
               <button
                 title={t("开始任务")}
-                disabled={!a.prompt.trim() || otherBusy}
+                disabled={
+                  !a.prompt.trim() ||
+                  otherBusy ||
+                  a.harness.loading ||
+                  (a.harness.images.length > 0 &&
+                    a.harness.options.capabilities.vision !== "supported")
+                }
                 onClick={() => void a.run()}
               >
                 <ArrowUp size={17} />
@@ -315,6 +376,23 @@ export function AgentPanel({
           selected={a.selected}
           onChange={a.setSelected}
           onClose={() => setPicker(false)}
+        />
+      )}
+      {memory && (
+        <MemoryLibrary
+          current={current}
+          proposal={memory.proposal}
+          readIds={memory.readIds}
+          onClose={() => setMemory(false)}
+        />
+      )}
+      {history && (
+        <SessionHistory
+          onClose={() => setHistory(false)}
+          onResume={(session) => {
+            a.resume(session);
+            setHistory(false);
+          }}
         />
       )}
       {a.review && a.result?.draft && a.base && (

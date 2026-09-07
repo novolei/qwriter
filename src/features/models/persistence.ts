@@ -1,6 +1,7 @@
 import { readLocal } from "../../shared/storage";
 import type { Profile } from "../../shared/types";
 import { presets } from "./presets";
+import { normalizeCapabilities } from "./capabilities";
 import type { ModelWorkspace, PoolModel, Provider } from "./types";
 
 export const MODEL_STORAGE_KEY = "qwriter.model-workspace.v1";
@@ -78,6 +79,9 @@ export function normalizeWorkspace(value: unknown): ModelWorkspace | null {
         model: m.model,
         name: text(m.name) ? m.name : m.model,
         enabled: m.enabled !== false,
+        ...(m.capabilities
+          ? { capabilities: normalizeCapabilities(m.capabilities) }
+          : {}),
         ...(isRecord(v) &&
         typeof v.at === "number" &&
         text(v.baseUrl) &&

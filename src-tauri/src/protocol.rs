@@ -1,5 +1,5 @@
 use crate::commands::{
-    agent, capture, cards, credentials, git, library, media, provider, streaming,
+    agent, capture, cards, credentials, git, knowledge, library, media, provider, streaming,
 };
 use tauri_specta::{collect_commands, Builder, ErrorHandlingMode};
 

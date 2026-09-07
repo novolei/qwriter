@@ -57,6 +57,14 @@ export const commands = {
     }),
   agentCancel: (requestId: string) =>
     __TAURI_INVOKE<null>("agent_cancel", { requestId }),
+  memoryList: () => __TAURI_INVOKE<MemoryEntry[]>("memory_list"),
+  memorySave: (entry: MemoryEntry) =>
+    __TAURI_INVOKE<MemoryEntry>("memory_save", { entry }),
+  memorySearch: (query: string, documentId: string) =>
+    __TAURI_INVOKE<MemoryEntry[]>("memory_search", { query, documentId }),
+  agentSessionSave: (session: AgentSession) =>
+    __TAURI_INVOKE<null>("agent_session_save", { session }),
+  agentSessions: () => __TAURI_INVOKE<AgentSession[]>("agent_sessions"),
   credentialRead: (id: string, origin: string) =>
     __TAURI_INVOKE<string | null>("credential_read", { id, origin }),
   credentialWrite: (id: string, origin: string, key: string) =>
@@ -119,6 +127,13 @@ export type AgentDraft = {
 
 export type AgentEvent =
   | { type: "started" }
+  | {
+      type: "context";
+      estimated_tokens: number;
+      budget: number;
+      compacted: boolean;
+    }
+  | { type: "plan"; steps: string[] }
   | { type: "thinking"; round: number }
   | { type: "tool"; name: string; detail: string; success: boolean };
 
@@ -126,6 +141,7 @@ export type AgentInput = {
   instruction: string;
   notes: AgentNote[];
   language: string;
+  harness?: HarnessOptions | null;
 };
 
 export type AgentNote = {
@@ -140,6 +156,17 @@ export type AgentOutput = {
   draft: AgentDraft | null;
   readIds: string[];
   rounds: number;
+  memories: MemoryProposal[];
+  memoryReadIds: string[];
+};
+
+export type AgentSession = {
+  id: string;
+  instruction: string;
+  model: string;
+  documentId: string;
+  createdAt: number;
+  output: AgentOutput;
 };
 
 export type AgentStatus = "complete" | "cancelled" | "limit";
@@ -161,6 +188,8 @@ export type Asset = {
   width: number | null;
   height: number | null;
 };
+
+export type CapabilitySupport = "unknown" | "supported" | "unsupported";
 
 export type CaptureEnvironment = {
   platform: string;
@@ -230,6 +259,16 @@ export type Document = {
   updated: number;
 };
 
+export type HarnessOptions = {
+  capabilities: ModelCapabilities;
+  thinking: ThinkingMode;
+  effort: ThinkingEffort;
+  maxRounds: number;
+  memoryEnabled: boolean;
+  documentId: string;
+  imageIds: string[];
+};
+
 export type Library = {
   revision: number;
   docs: Document[];
@@ -243,6 +282,32 @@ export type LinkPreview = {
   site: string;
   kind: string;
   thumbnail: Asset | null;
+};
+
+export type MemoryEntry = {
+  id: string;
+  title: string;
+  content: string;
+  kind: string;
+  documentId: string;
+  source: string;
+  archived: boolean;
+  revision: number;
+  updatedAt: number;
+};
+
+export type MemoryProposal = {
+  title: string;
+  content: string;
+  kind: string;
+  source: string;
+};
+
+export type ModelCapabilities = {
+  vision: CapabilitySupport;
+  tools: CapabilitySupport;
+  reasoning: ReasoningAdapter;
+  contextWindow: number;
 };
 
 export type ModelConfig = {
@@ -270,6 +335,9 @@ export type Patch = {
   text: string;
   truncated: boolean;
 };
+
+export type ReasoningAdapter =
+  "none" | "openai" | "deepseek" | "anthropic" | "anthropic_adaptive";
 
 export type RepoInfo = {
   path: string;
@@ -309,3 +377,7 @@ export type Snapshot = {
 };
 
 export type StreamEvent = { type: "started" } | { type: "delta"; text: string };
+
+export type ThinkingEffort = "low" | "medium" | "high";
+
+export type ThinkingMode = "auto" | "on" | "off";

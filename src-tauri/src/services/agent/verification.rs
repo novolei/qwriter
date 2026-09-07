@@ -32,6 +32,7 @@ pub async fn verify(config: ModelConfig) -> AppResult<ModelVerification> {
         instruction: "This is a connection test. Read the attached test document using read_document, then call propose_draft with title 'Connection test' and markdown containing ONLY the exact verification code from that document. No commentary is needed.".into(),
         notes: vec![AgentNote { id: "qwriter:connection-test".into(), title: "Connection test".into(), markdown: format!("Verification code: {marker}") }],
         language: "en".into(),
+        harness: None,
     };
     let output = tokio::time::timeout(
         Duration::from_secs(90),

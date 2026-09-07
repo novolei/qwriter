@@ -1,4 +1,5 @@
 import type { Config } from "../../shared/types";
+import type { ModelCapabilities } from "../../shared/ipc/bindings";
 
 export type Provider = {
   id: string;
@@ -11,6 +12,7 @@ export type Provider = {
   discoveredAt?: number;
 };
 export type PoolModel = {
+  capabilities?: ModelCapabilities;
   id: string;
   providerId: string;
   model: string;

@@ -18,6 +18,8 @@ src/
       media/                媒体协议、预览、Tiptap 节点、便携导出
     capture/                灵感卡片、恢复草稿、截图、OCR 与浮窗
     ai/                     AI 协作控制器与差异审阅
+    agent/                  任务工作台、能力选项、上下文与历史恢复
+    knowledge/              本地记忆、知识收藏与审阅表单
     library/                保存、恢复、历史
     models/                 厂商配置与连接检测
     settings/               排版配置与规范化
