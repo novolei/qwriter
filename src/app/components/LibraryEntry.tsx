@@ -24,6 +24,7 @@ export function LibraryEntry({
         title={t("切换文稿库")}
         aria-label={t("切换文稿库")}
         aria-expanded={open}
+        aria-controls="library-sidebar"
         aria-describedby={showHint ? hintId : undefined}
         onClick={() => {
           onDismiss();

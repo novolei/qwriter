@@ -13,6 +13,7 @@ import { t } from "../../shared/i18n/index";
 import { BrandIcon } from "../../shared/brand/BrandIcon";
 import { BrandTagline } from "../../shared/brand/BrandTagline";
 import { readLocal } from "../../shared/storage";
+import { Tooltip } from "../../shared/ui/Tooltip";
 export type AppMenuProps = {
   dark: boolean;
   focus: boolean;
@@ -21,6 +22,7 @@ export type AppMenuProps = {
   onAppearance: () => void;
   onSettings: () => void;
   compact?: boolean;
+  rail?: boolean;
 };
 export function AppMenu({
   dark,
@@ -30,6 +32,7 @@ export function AppMenu({
   onAppearance,
   onSettings,
   compact = false,
+  rail = false,
 }: AppMenuProps) {
   const ref = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
@@ -40,37 +43,48 @@ export function AppMenu({
   );
   return (
     <Menu.Root open={open} onOpenChange={setOpen}>
-      <Menu.Trigger asChild>
-        <button
-          ref={ref}
-          className={compact ? "app-menu-compact" : "brand-button"}
-          aria-label={t("工作区菜单")}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-        >
-          {compact ? (
-            <Settings size={16} />
-          ) : (
-            <>
-              <BrandIcon size={42} />
-              <span className="brand-wordmark">Qwriter</span>
-              <ChevronDown size={13} />
-              <BrandTagline
-                enabled={tipsEnabled}
-                paused={open || hovered || focused}
-              />
-            </>
-          )}
-        </button>
-      </Menu.Trigger>
+      <Tooltip label={t("工作区菜单")} disabled={!rail || open}>
+        <Menu.Trigger asChild>
+          <button
+            ref={ref}
+            className={
+              rail
+                ? "app-menu-rail"
+                : compact
+                  ? "app-menu-compact"
+                  : "brand-button"
+            }
+            aria-label={t("工作区菜单")}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+          >
+            {rail ? (
+              <BrandIcon size={32} />
+            ) : compact ? (
+              <Settings size={16} />
+            ) : (
+              <>
+                <BrandIcon size={42} />
+                <span className="brand-wordmark">Qwriter</span>
+                <ChevronDown size={13} />
+                <BrandTagline
+                  enabled={tipsEnabled}
+                  paused={open || hovered || focused}
+                />
+              </>
+            )}
+          </button>
+        </Menu.Trigger>
+      </Tooltip>
       <Menu.Portal
         container={ref.current?.closest<HTMLElement>(".app") ?? undefined}
       >
         <Menu.Content
           className="ui-menu-content"
           sideOffset={7}
+          side={rail ? "right" : "bottom"}
           align="start"
           collisionPadding={12}
           data-ui-overlay="menu"

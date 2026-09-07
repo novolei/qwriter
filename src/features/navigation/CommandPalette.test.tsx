@@ -47,6 +47,7 @@ it("retargets keyboard selection when filtering removes the selected document", 
     />,
   );
   const input = await screen.findByRole("combobox", { name: "搜索文稿与操作" });
+  expect(screen.getByRole("listbox", { name: "搜索结果" })).toBeTruthy();
   fireEvent.change(input, { target: { value: "查找" } });
   await waitFor(() =>
     expect(

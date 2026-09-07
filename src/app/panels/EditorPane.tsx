@@ -155,7 +155,7 @@ export function EditorPane(props: Props) {
             >
               <Search size={16} />
             </button>
-            {(!left || focus) && (
+            {focus && (
               <AppMenu
                 compact
                 dark={dark}

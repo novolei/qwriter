@@ -76,7 +76,7 @@ export function CommandPalette({
           />
           <kbd>Esc</kbd>
         </div>
-        <Command.List>
+        <Command.List label={t("搜索结果")}>
           {!hits.length && !filtered.length && (
             <Command.Empty>
               <Search size={25} />

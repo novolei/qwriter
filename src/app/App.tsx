@@ -12,11 +12,10 @@ import { language, t } from "../shared/i18n/index";
 import { AppearancePanel } from "./panels/AppearancePanel";
 import { CompanionPanel } from "./panels/CompanionPanel";
 import { EditorPane } from "./panels/EditorPane";
-import { LibrarySidebar } from "./panels/LibrarySidebar";
+import { NavigationPanel } from "./panels/NavigationPanel";
 import { StudioPanel } from "./panels/StudioPanel";
 import { WorkspaceDialogs } from "./panels/WorkspaceDialogs";
 import { useWorkspace } from "./useWorkspace";
-import { LibraryDrawer } from "./components/LibraryDrawer";
 const CommandPalette = lazy(() =>
   import("../features/navigation/CommandPalette").then((module) => ({
     default: module.CommandPalette,
@@ -165,42 +164,37 @@ export function App() {
         }}
       />
       <div className="workspace">
-        <LibraryDrawer
+        <NavigationPanel
           compact={workspace.compact}
-          open={left && !focus}
-          onClose={() => setLeft(false)}
-        >
-          <LibrarySidebar
-            captureEntry={
-              <InspirationEntry
-                cards={capture.cards.cards}
-                onOpen={() => capture.open("inbox")}
-                onNew={() => capture.quickNote()}
-              />
-            }
-            left={left}
-            focus={focus}
-            search={search}
-            setSearch={setSearch}
-            newDoc={() => {
-              newDoc();
-              if (workspace.compact) setLeft(false);
-            }}
-            docs={docs}
-            active={active}
-            selectDoc={(doc) => {
-              selectDoc(doc);
-              if (workspace.compact) setLeft(false);
-            }}
-            headings={headings}
-            importDoc={importDoc}
-            dark={dark}
-            setDark={setDark}
-            setAppearance={setAppearance}
-            setSettings={setSettings}
-            setFocus={setFocus}
-          />
-        </LibraryDrawer>
+          setLeft={setLeft}
+          current={current}
+          dismissLibraryHint={workspace.dismissLibraryHint}
+          onSearch={() => quick.setPalette(true)}
+          onQuickNote={() => capture.quickNote()}
+          onGit={() => setGitWorkspace(true)}
+          captureEntry={
+            <InspirationEntry
+              cards={capture.cards.cards}
+              onOpen={() => capture.open("inbox")}
+              onNew={() => capture.quickNote()}
+            />
+          }
+          left={left}
+          focus={focus}
+          search={search}
+          setSearch={setSearch}
+          newDoc={newDoc}
+          docs={docs}
+          active={active}
+          selectDoc={selectDoc}
+          headings={headings}
+          importDoc={importDoc}
+          dark={dark}
+          setDark={setDark}
+          setAppearance={setAppearance}
+          setSettings={setSettings}
+          setFocus={setFocus}
+        />
         <EditorPane
           onMedia={() => capture.open("media")}
           onCapture={() => capture.open("inbox")}

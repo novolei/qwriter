@@ -6,6 +6,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { changeLanguage } from "../shared/i18n/index";
@@ -36,6 +37,7 @@ beforeEach(async () => {
   mock.invoke.mockReset();
   mock.invoke.mockImplementation(async (command, args) => {
     if (command === "cards_list") return [];
+    if (command === "memory_list") return [];
     if (command === "capture_pending_insert") return null;
     if (command === "library_load")
       return { docs: [doc], revision: 1, location: "test.db" };
@@ -57,6 +59,38 @@ async function openApp() {
     expect(document.querySelector(".boot-overlay")).toBeNull(),
   );
 }
+it("keeps collapsed navigation connected to the library, knowledge and preferences", async () => {
+  await openApp();
+  fireEvent.click(screen.getByRole("button", { name: "切换文稿库" }));
+  const rail = screen.getByRole("navigation", { name: "快捷导航" });
+  expect(screen.queryByRole("complementary", { name: "文稿库" })).toBeNull();
+  const knowledge = within(rail).getByRole("button", { name: "记忆与知识库" });
+  act(() => knowledge.focus());
+  fireEvent.click(knowledge);
+  const dialog = await screen.findByRole("dialog", { name: "记忆与知识库" });
+  fireEvent.keyDown(dialog, { key: "Escape" });
+  await waitFor(() => expect(document.activeElement).toBe(knowledge));
+  fireEvent.click(within(rail).getByRole("button", { name: "切换至夜读模式" }));
+  expect(document.querySelector(".app.dark")).toBeTruthy();
+  await act(() => changeLanguage("en"));
+  expect(screen.getByRole("navigation", { name: "Quick navigation" })).toBe(
+    rail,
+  );
+  expect(
+    within(rail).getByRole("button", { name: "Switch to light mode" }),
+  ).toBeTruthy();
+  await act(() => changeLanguage("zh-CN"));
+  fireEvent.click(within(rail).getByRole("button", { name: "设置" }));
+  await screen.findByRole("dialog", { name: "模型与连接" });
+  fireEvent.click(screen.getByRole("button", { name: "关闭弹窗" }));
+  fireEvent.click(within(rail).getByRole("button", { name: "打开文稿库" }));
+  expect(screen.queryByRole("navigation", { name: "快捷导航" })).toBeNull();
+  expect(document.activeElement).toBe(
+    screen.getByRole("textbox", { name: "搜索文稿" }),
+  );
+  expect(screen.getByRole("button", { name: "测试文稿" })).toBeTruthy();
+  expect(document.querySelector(".tiptap")?.textContent).toContain("原文");
+});
 it("requires a review before replacing the document", async () => {
   await openApp();
   fireEvent.click(screen.getByRole("button", { name: /润色文字/ }));

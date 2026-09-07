@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
   BookOpen,
   FileText,
@@ -31,7 +31,7 @@ type Props = Pick<
   | "setAppearance"
   | "setSettings"
   | "setFocus"
-> & { captureEntry?: ReactNode };
+> & { captureEntry?: ReactNode; searchRef?: Ref<HTMLInputElement> };
 export function LibrarySidebar(props: Props) {
   const {
     left,
@@ -53,7 +53,11 @@ export function LibrarySidebar(props: Props) {
   return (
     <>
       {left && !focus && (
-        <aside className="sidebar">
+        <aside
+          id="library-sidebar"
+          className="sidebar"
+          aria-label={t("文稿库")}
+        >
           <div className="sidebar-brand">
             <AppMenu
               dark={dark}
@@ -67,6 +71,7 @@ export function LibrarySidebar(props: Props) {
           <div className="search">
             <Search size={15} />
             <input
+              ref={props.searchRef}
               placeholder={t("搜索文稿…")}
               aria-label={t("搜索文稿")}
               value={search}
