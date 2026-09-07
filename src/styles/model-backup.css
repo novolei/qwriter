@@ -1,0 +1,159 @@
+.backup-intro {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 18px 0 22px;
+}
+.backup-symbol {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  height: 44px;
+  border-radius: 13px;
+  color: var(--green);
+  background: var(--tint);
+}
+.backup-intro h3 {
+  margin: 0 0 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.backup-intro p,
+.backup-safety {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.backup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.backup-actions > button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  padding: 17px 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  transition:
+    background 150ms,
+    border-color 150ms;
+}
+.backup-actions > button:hover:not(:disabled) {
+  background: var(--tint);
+  border-color: var(--green);
+}
+.backup-actions svg {
+  flex-shrink: 0;
+  color: var(--green);
+}
+.backup-actions strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+}
+.backup-actions small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+}
+.backup-preview {
+  margin-top: 22px;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+.backup-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 17px;
+  color: var(--green);
+}
+.backup-file strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  font-weight: 500;
+}
+.backup-file svg {
+  flex-shrink: 0;
+}
+.backup-file button {
+  margin-left: auto;
+  white-space: nowrap;
+  font-size: 11px;
+}
+.backup-rows {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.backup-rows li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.backup-rows li > div {
+  min-width: 0;
+}
+.backup-rows strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.backup-rows small {
+  display: block;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  font-size: 10px;
+  margin-top: 5px;
+}
+.backup-rows li > span {
+  font-size: 10px;
+  color: var(--green);
+  flex-shrink: 0;
+}
+.backup-rows .is-skipped {
+  opacity: 0.65;
+}
+.backup-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.backup-confirm p {
+  font-size: 11px;
+  color: var(--muted);
+}
+.backup-confirm button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+@media (max-width: 560px) {
+  .backup-actions {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .backup-actions > button {
+    transition: none;
+  }
+}

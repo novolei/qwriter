@@ -9,6 +9,8 @@ import {
 import { presets } from "./presets";
 import type { ModelWorkspace, PoolModel, Provider } from "./types";
 import { useProviderCredentials } from "./useProviderCredentials";
+import type { ModelBackup } from "./backup/format";
+import { planImport, type DuplicatePolicy } from "./backup/merge";
 export { presets } from "./presets";
 export { publicProfiles } from "./persistence";
 
@@ -63,6 +65,21 @@ export function useModels() {
         ? { ...old, selected: id }
         : old,
     );
+  }
+  function importBackup(backup: ModelBackup, policy: DuplicatePolicy) {
+    const plan = planImport(latest.current, backup, policy);
+    if (!plan.providersAdded) return plan;
+    try {
+      localStorage.setItem(
+        MODEL_STORAGE_KEY,
+        serializeWorkspace(plan.workspace),
+      );
+    } catch {
+      throw new Error("模型配置保存失败，未导入任何配置");
+    }
+    latest.current = plan.workspace;
+    setWorkspace(plan.workspace);
+    return plan;
   }
   function addProvider(kind = "DeepSeek") {
     const id = crypto.randomUUID();
@@ -231,6 +248,7 @@ export function useModels() {
       },
     },
     resolve,
+    importBackup,
     select,
     addProvider,
     updateProvider,

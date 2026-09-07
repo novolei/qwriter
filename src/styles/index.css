@@ -21,6 +21,7 @@
 @import "./agent.css";
 @import "./connections.css";
 @import "./models.css";
+@import "./model-backup.css";
 @import "./paragraph-navigation.css";
 
 @import "./capture.css";

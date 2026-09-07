@@ -395,7 +395,7 @@ input[type="checkbox"] {
   position: absolute;
   top: calc(100% + 10px);
   left: 0;
-  z-index: 24;
+  z-index: 18;
   width: 260px;
   max-width: 80vw;
   display: flex;

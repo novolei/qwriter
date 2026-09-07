@@ -6,6 +6,7 @@ import { Select } from "../../shared/ui/Select";
 import type { useModels } from "./useModels";
 import { ProviderEditor } from "./ProviderEditor";
 import { ModelPool } from "./ModelPool";
+import { ModelBackupPanel } from "./backup/ModelBackupPanel";
 
 export function ModelSettings({
   models: store,
@@ -16,7 +17,9 @@ export function ModelSettings({
   onClose: () => void;
   onAppearance: () => void;
 }) {
-  const [page, setPage] = useState<"providers" | "pool">("providers");
+  const [page, setPage] = useState<"providers" | "pool" | "backup">(
+    "providers",
+  );
   const [active, setActive] = useState(
     () =>
       store.models.find((m) => m.id === store.config.id)?.providerId ??
@@ -59,6 +62,12 @@ export function ModelSettings({
         <button aria-pressed={page === "pool"} onClick={() => setPage("pool")}>
           {t("我的模型池")}
           <span>{store.models.length}</span>
+        </button>
+        <button
+          aria-pressed={page === "backup"}
+          onClick={() => setPage("backup")}
+        >
+          {t("备份与迁移")}
         </button>
       </div>
       {page === "providers" ? (
@@ -143,8 +152,10 @@ export function ModelSettings({
             </div>
           )}
         </>
-      ) : (
+      ) : page === "pool" ? (
         <ModelPool store={store} onAdd={() => setPage("providers")} />
+      ) : (
+        <ModelBackupPanel store={store} />
       )}
       {store.error && <p role="alert">{t(store.error)}</p>}
       <div className="connection-footer">
