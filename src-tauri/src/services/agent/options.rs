@@ -47,13 +47,14 @@ pub enum ThinkingMode {
     On,
     Off,
 }
-#[derive(Clone, Default, Deserialize, Serialize, Type)]
+#[derive(Clone, Default, Deserialize, Serialize, Type, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum ThinkingEffort {
     Low,
     #[default]
     Medium,
     High,
+    Max,
 }
 #[derive(Clone, Deserialize, Serialize, Type)]
 #[serde(rename_all = "camelCase")]
@@ -99,6 +100,13 @@ impl HarnessOptions {
             ));
         }
         if self.thinking != ThinkingMode::Auto {
+            if self.effort == ThinkingEffort::Max
+                && self.capabilities.reasoning != ReasoningAdapter::Deepseek
+            {
+                return Err(AppError::Validation(
+                    "最高思考强度仅适用于 DeepSeek 思考协议".into(),
+                ));
+            }
             let compatible = match self.capabilities.reasoning {
                 ReasoningAdapter::None => false,
                 ReasoningAdapter::Openai | ReasoningAdapter::Deepseek => protocol == "openai",
@@ -119,6 +127,7 @@ impl HarnessOptions {
             ThinkingEffort::Low => "low",
             ThinkingEffort::Medium => "medium",
             ThinkingEffort::High => "high",
+            ThinkingEffort::Max => "max",
         };
         match self.capabilities.reasoning {
             ReasoningAdapter::Openai => {
@@ -127,12 +136,16 @@ impl HarnessOptions {
             ReasoningAdapter::Deepseek => {
                 body["thinking"] = json!({"type":if enabled { "enabled" } else { "disabled" }});
                 if enabled {
-                    body["reasoning_effort"] = json!(if effort == "low" { "low" } else { "high" });
+                    body["reasoning_effort"] = json!(match self.effort {
+                        ThinkingEffort::Low => "low",
+                        ThinkingEffort::Max => "max",
+                        _ => "high",
+                    });
                 }
             }
             ReasoningAdapter::Anthropic => {
                 body["thinking"] = if enabled {
-                    json!({"type":"enabled","budget_tokens":match self.effort { ThinkingEffort::Low => 1024, ThinkingEffort::Medium => 4096, ThinkingEffort::High => 6144 }})
+                    json!({"type":"enabled","budget_tokens":match self.effort { ThinkingEffort::Low => 1024, ThinkingEffort::Medium => 4096, _ => 6144 }})
                 } else {
                     json!({"type":"disabled"})
                 };

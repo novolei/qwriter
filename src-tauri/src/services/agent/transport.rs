@@ -117,6 +117,32 @@ pub fn tool_reply(id: &str, name: &str, value: Value, success: bool, anthropic: 
     }
 }
 
+pub fn payload(
+    config: &ModelConfig,
+    system: &str,
+    messages: &[Value],
+    options: &super::options::HarnessOptions,
+) -> AppResult<Value> {
+    let anthropic = config.protocol == "anthropic";
+    let mut payload = body(config, system, messages);
+    let budget = super::provider_policy::output_budget(config, options);
+    let output_field = if !anthropic
+        && options.capabilities.reasoning == super::options::ReasoningAdapter::Openai
+    {
+        "max_completion_tokens"
+    } else {
+        "max_tokens"
+    };
+    payload[output_field] = json!(budget);
+    let extra = super::harness_tools::definitions(options.memory_enabled);
+    if let Some(tools) = payload["tools"].as_array_mut() {
+        tools.extend(extra.iter().map(|d| if anthropic { json!({"name":d["name"],"description":d["description"],"input_schema":d["parameters"]}) } else { json!({"type":"function","function":d}) }));
+    }
+    options.apply_reasoning(&mut payload);
+    super::provider_policy::prepare(&mut payload, config, options)?;
+    Ok(payload)
+}
+
 pub async fn request_with_options(
     client: &reqwest::Client,
     config: &ModelConfig,
@@ -134,12 +160,7 @@ pub async fn request_with_options(
         },
     )
     .map_err(AppError::Validation)?;
-    let mut payload = body(config, system, messages);
-    let extra = super::harness_tools::definitions(options.memory_enabled);
-    if let Some(tools) = payload["tools"].as_array_mut() {
-        tools.extend(extra.iter().map(|d| if anthropic { json!({"name":d["name"],"description":d["description"],"input_schema":d["parameters"]}) } else { json!({"type":"function","function":d}) }));
-    }
-    options.apply_reasoning(&mut payload);
+    let payload = payload(config, system, messages, options)?;
     let mut request = client.post(url).json(&payload);
     if anthropic {
         request = request

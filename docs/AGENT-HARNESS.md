@@ -17,8 +17,8 @@
 | 原生适配 | commands/agent、commands/knowledge | 生成 IPC、状态注入、阻塞工作转交后台 |
 | 运行循环 | services/agent/mod | 取消、轮次、上下文预算、网络和工具调度 |
 | 上下文 | services/agent/context | 图片预处理、参考目录、偏好装配、旧结果压缩 |
-| 协议 | services/agent/transport、options | OpenAI / Anthropic 消息、工具和 thinking 参数适配 |
-| 工具 | services/agent/tools、harness_tools | 限定文稿、计划、记忆检索 / 阅读 / 候选、草稿提案 |
+| 协议 | services/agent/transport、options、provider_policy | OpenAI / Anthropic 消息、DeepSeek 续轮与独立输出预算 |
+| 工具 | services/agent/tools、harness_tools、memory_tools | 限定文稿、计划、异步知识检索 / 阅读 / 候选、草稿提案 |
 | 本地资料 | services/knowledge | SQLite、FTS5、修订冲突、范围、归档与任务结果历史 |
 
 前端只使用生成 commands 与 DTO。capture、pin 窗口不获得记忆、模型或 Agent 权限；密钥仍由既有凭据系统管理。
@@ -54,7 +54,7 @@ Rust 从应用素材库按经过校验的 ID 读取，验证 MIME、32 MB 文件
 | 适配器 | 开启时的映射 |
 | --- | --- |
 | OpenAI | reasoning_effort: low / medium / high |
-| DeepSeek | thinking.type=enabled；effort 轻量为 low，均衡和深入为 high |
+| DeepSeek | thinking.type=enabled；轻量为 low，均衡和深入为 high，最高强度为 max |
 | Anthropic 手动 | thinking budget_tokens: 1024 / 4096 / 6144 |
 | Anthropic adaptive | thinking.type=adaptive；output_config.effort: low / medium / high |
 
@@ -75,13 +75,13 @@ Rust 从应用素材库按经过校验的 ID 读取，验证 MIME、32 MB 文件
 
 每条 MemoryEntry 有 id、kind、title、content、source、documentId、revision、updatedAt、archived。全局范围和文稿范围显式选择。更新用乐观修订校验，防止两个窗口覆盖彼此；归档退出新任务的检索，可恢复。已经发出的任务使用自己的快照，归档无法撤回供应商已经收到的内容。
 
-原生事实源是 app_data_dir/knowledge.sqlite3，使用事务、WAL、FULL 同步与 FTS5 trigram 索引。浏览器演示使用独立 IndexedDB，二者不会自动迁移。当前每条最多 128 KB，总计最多 1000 条（包含归档）。UI 搜索和运行中的 Agent 在已加载的有限快照中作字面匹配；原生 memory_search 已有 FTS5 查询，但尚未替换为流式检索适配器。尚无向量嵌入或语义检索，不应将其宣传为完整 RAG 引擎。
+原生事实源是 app_data_dir/knowledge.sqlite3，使用事务、WAL、FULL 同步。现已加入版本化分块、CJK 词项和 FTS5 BM25 检索，并通过异步 KnowledgeRetriever 接入 Agent；任务启动只加载少量偏好，知识正文按需读取。浏览器演示使用独立 IndexedDB 和内存排序，二者不会自动迁移。每条最多 128 KB，总计最多 1000 条（包含归档）。本轮仍无向量嵌入或语义检索，完整契约见 [KNOWLEDGE-RETRIEVAL.md](KNOWLEDGE-RETRIEVAL.md)。
 
 开启记忆访问意味着相关文本可能发送到当前模型服务。权限默认关闭，可以保存为用户偏好。所有内容、图片和来源都视为资料，不能给 Agent 新增权限；当前用户要求优先于旧偏好。候选来源是模型声明，需用户核对，并不等同于经过验证的事实。
 
 ## 上下文治理
 
-先发送文稿目录，再按需阅读正文。上下文容量是用户确认的模型元数据；估算使用字符权重和图片配额，明确是估算而非供应商精确 token 用量。保留约 12000 tokens 给系统、工具定义和输出。
+先发送文稿目录，再按需阅读正文。上下文容量是用户确认的模型元数据；估算使用字符权重和图片配额，明确是估算而非供应商精确 token 用量。系统和工具定义单独估算，再留 1024 tokens 余量；通常预留 8192 输出，DeepSeek 思考模式预留 min(32768, contextWindow/2)。输出参数与输入预算使用同一策略，避免适配层盲目放大。
 
 超出预算时压缩较旧的参考工具结果，保留初始目标、最近结果、assistant / tool 配对，以及供应商要求保留的思考状态。模型可按 ID 再读资料。仍放不下时停止并提示缩小附件或调整已确认容量；不静默丢掉用户目标。图片 base64 不按普通文本估算；请求体另设 16 MB 防线，响应维持 2 MB 上限。
 
@@ -89,8 +89,8 @@ Rust 从应用素材库按经过校验的 ID 读取，验证 MIME、32 MB 文件
 
 ## 下一阶段与验收条件
 
-1. 定义异步 MemoryRetriever 接口，将 FTS5 按范围检索接入运行循环，避免预载整个知识库；补中英文检索评估集，测 recall、来源准确率和耗时。
-2. 知识文档分块、稳定 chunk ID、来源版本、去重与失效标记；支持逐段引用并回到原文。
+1. 已完成异步 KnowledgeRetriever、FTS5 按范围检索和固定中英评估小样本；下一步扩充真实语料与大库性能测试。
+2. 已完成知识分块、版本化 chunk ID、来源行号、失效保护、来源快照和预览定位；下一步加入重复导入识别与编辑器/导出中的便携引用。
 3. 在关键词基线合格后增加可选本地 embedding、混合检索与重排；先明确模型下载、索引重建、磁盘预算和离线行为。
 4. 记忆审阅队列、冲突合并、有效期、可导出 / 导入的用户规则与知识备份；新增永久删除需独立交互与索引删除验证。
 5. 追加式任务事件日志、崩溃后恢复检查点、上下文摘要版本和精确用量回执。恢复有副作用工具前重新审核权限，不盲目重放。
@@ -105,4 +105,4 @@ Rust 从应用素材库按经过校验的 ID 读取，验证 MIME、32 MB 文件
 - [Claude Code memory](https://code.claude.com/docs/en/memory)：参考模块化、作用域明确、可审阅的规则与记忆。
 - [DeepSeek thinking](https://api-docs.deepseek.com/guides/thinking_mode/) 与 [Anthropic extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking)：参数与多轮状态保留的协议依据。
 
-这些项目的设计被用作分层与协议参考，不代表 Qwriter 已有其全部功能。具体测试证据见本轮 audit 记录。
+这些项目的设计被用作分层与协议参考，不代表 Qwriter 已有其全部功能。2026-09-07 后续已审阅 OpenHanako 的实际 DeepSeek 和 memory v2 代码，具体采用与差异见 [AGENT-REFERENCE-REVIEW.md](AGENT-REFERENCE-REVIEW.md)。测试证据见 [本轮 audit](audit/2026-09-07-retrieval/REVIEW.md)。

@@ -108,7 +108,7 @@ export function HarnessControls({
           <label>
             {t("思考强度")}
             <Select
-              value={h.preferences.effort}
+              value={h.options.effort}
               disabled={locked || h.options.thinking !== "on"}
               aria-label={t("思考强度")}
               onValueChange={(v) =>
@@ -118,6 +118,9 @@ export function HarnessControls({
               <option value="low">{t("轻量")}</option>
               <option value="medium">{t("均衡")}</option>
               <option value="high">{t("深入")}</option>
+              {caps.reasoning === "deepseek" && (
+                <option value="max">{t("最高强度")}</option>
+              )}
             </Select>
           </label>
           <small>
@@ -125,6 +128,13 @@ export function HarnessControls({
               "仅对已配置思考协议的模型生效；强度映射由供应商决定，不展示内部思考过程。",
             )}
           </small>
+          {caps.reasoning === "deepseek" && (
+            <small>
+              {t(
+                "DeepSeek：均衡与深入均对应 high；最高强度对应 max。输出长度仍受上下文预算约束。",
+              )}
+            </small>
+          )}
           <label>
             {t("任务步骤上限")}
             <Select

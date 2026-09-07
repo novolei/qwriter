@@ -7,6 +7,7 @@ macro_rules! registered_commands {
         streaming::ai_stream, streaming::ai_cancel,
         agent::agent_run, agent::agent_cancel,
         knowledge::memory_list, knowledge::memory_save, knowledge::memory_search,
+        knowledge::knowledge_search, knowledge::knowledge_source,
         knowledge::agent_session_save, knowledge::agent_sessions,
         credentials::credential_read, credentials::credential_write, credentials::credential_remove,
         media::media_pick, media::media_import, media::media_asset, media::media_path, media::media_export, media::link_preview, media::open_external,

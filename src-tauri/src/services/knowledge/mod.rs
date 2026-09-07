@@ -29,6 +29,7 @@ fn connect(root: &Path) -> AppResult<Connection> {
         CREATE TABLE IF NOT EXISTS memories(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, data TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS agent_sessions(id TEXT PRIMARY KEY, data TEXT NOT NULL);
         CREATE VIRTUAL TABLE IF NOT EXISTS memory_search USING fts5(id UNINDEXED, title, content, tokenize='trigram');")?;
+    index::schema(&db)?;
     Ok(db)
 }
 pub fn validate(entry: &MemoryEntry) -> AppResult<()> {
@@ -41,6 +42,7 @@ pub fn validate(entry: &MemoryEntry) -> AppResult<()> {
         || entry.document_id.len() > 200
         || entry.source.len() > 1000
         || entry.revision < 0
+        || entry.revision >= 9_007_199_254_740_991
     {
         return Err(AppError::Validation("记忆内容无效或超过大小限制".into()));
     }
@@ -87,6 +89,7 @@ pub fn save(root: &Path, mut entry: MemoryEntry) -> AppResult<MemoryEntry> {
             params![entry.id, entry.title, entry.content],
         )?;
     }
+    index::replace(&tx, &entry)?;
     tx.commit()?;
     Ok(entry)
 }
@@ -120,6 +123,13 @@ pub fn search(root: &Path, query: &str, document_id: &str) -> AppResult<Vec<Memo
         .collect())
 }
 
+pub mod chunks;
+pub mod index;
+#[cfg(test)]
+mod retrieval_eval;
+#[cfg(test)]
+mod retrieval_tests;
+pub mod retriever;
 pub mod sessions;
 #[cfg(test)]
 mod tests;

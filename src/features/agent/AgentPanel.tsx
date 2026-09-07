@@ -11,13 +11,13 @@ import {
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Doc } from "../../shared/types";
 import { t } from "../../shared/i18n/index";
-import { MarkdownPreview } from "../../shared/ui/MarkdownPreview";
 import { Review } from "../ai/Review";
 import { AgentTimeline } from "./AgentTimeline";
 import { ReferencePicker } from "./ReferencePicker";
 import type { WritingAgent } from "./useWritingAgent";
 import { HarnessControls } from "./HarnessControls";
 import { SessionHistory } from "./SessionHistory";
+import { KnowledgeEvidence, KnowledgePreview } from "./KnowledgeEvidence";
 import { MemoryLibrary } from "../knowledge/MemoryLibrary";
 import type { MemoryProposal } from "../../shared/ipc/bindings";
 
@@ -157,7 +157,13 @@ export function AgentPanel({
               <BookOpen size={14} />
               {t(preview ? "收起预览" : "阅读完整内容")}
             </button>
-            {preview && <MarkdownPreview markdown={content} />}
+            {preview && (
+              <KnowledgePreview
+                markdown={content}
+                sources={a.result?.knowledgeSources ?? []}
+                documentId={current.id}
+              />
+            )}
             <div className="agent-draft-actions">
               <button className="primary" onClick={a.save}>
                 <FilePlus2 size={14} />
@@ -213,6 +219,10 @@ export function AgentPanel({
             ))}
           </section>
         )}
+        <KnowledgeEvidence
+          sources={a.result?.knowledgeSources ?? []}
+          documentId={current.id}
+        />
         {!!a.result?.memoryReadIds.length && (
           <button
             className="agent-followup"

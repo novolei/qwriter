@@ -60,6 +60,7 @@ fn history_is_immutable_and_bounded_after_reopening() {
                 read_ids: vec![],
                 memories: vec![],
                 memory_read_ids: vec![],
+                knowledge_sources: vec![],
             },
         };
         sessions::save(&root, session.clone()).unwrap();

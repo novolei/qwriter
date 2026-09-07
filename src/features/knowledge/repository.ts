@@ -1,11 +1,18 @@
 import { isTauri } from "@tauri-apps/api/core";
 import { openDB, type DBSchema } from "idb";
-import { commands, type MemoryEntry } from "../../shared/ipc/bindings";
+import {
+  commands,
+  type MemoryEntry,
+  type KnowledgeChunk,
+} from "../../shared/ipc/bindings";
 import { t } from "../../shared/i18n";
+import { searchPreview } from "./previewRetrieval";
 
 export interface MemoryRepository {
   list(): Promise<MemoryEntry[]>;
   save(entry: MemoryEntry): Promise<MemoryEntry>;
+  search(query: string, documentId: string): Promise<KnowledgeChunk[]>;
+  source(memoryId: string, documentId: string): Promise<MemoryEntry | null>;
 }
 interface KnowledgeDatabase extends DBSchema {
   memories: { key: string; value: MemoryEntry };
@@ -17,6 +24,26 @@ const database = () =>
     },
   });
 export const memoryRepository: MemoryRepository = {
+  async search(query, documentId) {
+    if (new TextEncoder().encode(query).length > 300)
+      throw new Error(t("搜索内容不能超过 300 字节"));
+    if (isTauri()) return commands.knowledgeSearch(query, documentId);
+    return searchPreview(await this.list(), query, documentId);
+  },
+  async source(memoryId, documentId) {
+    if (isTauri()) return commands.knowledgeSource(memoryId, documentId);
+    const db = await database();
+    try {
+      const entry = await db.get("memories", memoryId);
+      return entry &&
+        !entry.archived &&
+        (!entry.documentId || entry.documentId === documentId)
+        ? entry
+        : null;
+    } finally {
+      db.close();
+    }
+  },
   async list() {
     if (isTauri()) return commands.memoryList();
     const db = await database();

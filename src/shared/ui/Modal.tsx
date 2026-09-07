@@ -73,6 +73,13 @@ export function Modal({
                 const next = Array.from(
                   document.querySelectorAll<HTMLElement>(".modal"),
                 ).find((node) => node !== content.current);
+                if (
+                  returnFocus.current?.isConnected &&
+                  (!next || next.contains(returnFocus.current))
+                ) {
+                  returnFocus.current.focus();
+                  return;
+                }
                 if (next) {
                   (
                     next.querySelector<HTMLElement>("[data-autofocus]") ??

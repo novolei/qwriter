@@ -2,7 +2,9 @@ pub mod context;
 mod harness_tools;
 #[cfg(test)]
 mod live;
+mod memory_tools;
 pub mod options;
+mod provider_policy;
 #[cfg(test)]
 mod tests;
 mod tools;
@@ -144,6 +146,7 @@ pub async fn run_with_context(
         rounds: 0,
         memories: vec![],
         memory_read_ids: context.preferences().map(|m| m.id.clone()).collect(),
+        knowledge_sources: vec![],
     };
     emit(AgentEvent::Started)?;
     for round in 1..=options.max_rounds {
@@ -152,11 +155,13 @@ pub async fn run_with_context(
             return Ok(output);
         }
         output.rounds = round;
+        let envelope = transport::payload(&config, &system, &[], &options)?;
+        let overhead = context::estimate(&envelope).saturating_add(1024);
         let budget = options
             .capabilities
             .context_window
-            .saturating_sub(12_000)
-            .max(1500);
+            .saturating_sub(provider_policy::output_budget(&config, &options))
+            .saturating_sub(overhead);
         let (estimated_tokens, compacted) = context::fit(&mut messages, budget);
         emit(AgentEvent::Context {
             estimated_tokens,
@@ -178,6 +183,7 @@ pub async fn run_with_context(
             output.status = AgentStatus::Cancelled;
             return Ok(output);
         }
+        provider_policy::validate_turn(&turn.message, !turn.calls.is_empty(), &config, &options)?;
         output.answer = turn.text;
         if turn.calls.is_empty() {
             output.status = AgentStatus::Complete;
@@ -186,10 +192,26 @@ pub async fn run_with_context(
         messages.push(turn.message);
         let mut replies = Vec::new();
         for call in turn.calls {
+            let retrieved = tokio::select! {
+                biased;
+                _ = token.cancelled() => { output.status = AgentStatus::Cancelled; return Ok(output); },
+                result = memory_tools::execute(&call.name, &call.arguments, &context, &mut output, options.memory_enabled) => result,
+            };
+            if let Some((value, event)) = retrieved {
+                let success = value.get("error").is_none();
+                emit(event)?;
+                replies.push(transport::tool_reply(
+                    &call.id,
+                    &call.name,
+                    value,
+                    success,
+                    config.protocol == "anthropic",
+                ));
+                continue;
+            }
             if let Some((value, event)) = harness_tools::execute(
                 &call.name,
                 &call.arguments,
-                &context,
                 &mut output,
                 options.memory_enabled,
             ) {

@@ -28,7 +28,7 @@ fn input() -> AgentInput {
     }
 }
 fn call(name: &str, args: Value) -> Value {
-    json!({"choices":[{"finish_reason":"tool_calls","message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_1","type":"function","function":{"name":name,"arguments":args.to_string()}}]}}]})
+    json!({"choices":[{"finish_reason":"tool_calls","message":{"role":"assistant","content":null,"reasoning_content":"","tool_calls":[{"id":"call_1","type":"function","function":{"name":name,"arguments":args.to_string()}}]}}]})
 }
 fn server(responses: Vec<Value>) -> (String, thread::JoinHandle<Vec<Value>>) {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
@@ -209,12 +209,14 @@ fn rejects_truncation_and_malformed_tool_arguments() {
 }
 
 #[test]
-fn harness_preserves_reasoning_and_reads_memory_before_proposing() {
-    let mut first = call("search_memory", json!({"query":"concise"}));
+fn harness_preserves_reasoning_and_preferences_before_proposing() {
+    let mut first = call(
+        "update_plan",
+        json!({"steps":["Read preferences", "Draft"]}),
+    );
     first["choices"][0]["message"]["reasoning_content"] = json!("opaque provider state");
     let (url, server) = server(vec![
         first,
-        call("read_memory", json!({"id":"m1"})),
         call(
             "propose_memory",
             json!({"title":"Tone","content":"Use concrete short sentences.","kind":"preference","source":"User request"}),
@@ -252,6 +254,7 @@ fn harness_preserves_reasoning_and_reads_memory_before_proposing() {
         context::RunContext {
             images: vec![],
             memories: vec![memory],
+            retriever: None,
         },
         |_| Ok(()),
     ))
@@ -283,6 +286,7 @@ fn images_use_correct_provider_blocks_and_unknown_capabilities_fail_closed() {
     let context = context::RunContext {
         images: vec!["jpeg-base64".into()],
         memories: vec![],
+        retriever: None,
     };
     let openai = context::first_message(&input, &context, false);
     let anthropic = context::first_message(&input, &context, true);
@@ -400,3 +404,6 @@ fn local_image_preparation_and_large_image_followup_work() {
     assert_eq!(server.join().unwrap().len(), 2);
     std::fs::remove_dir_all(root).unwrap();
 }
+
+mod provider_policy;
+mod retrieval;

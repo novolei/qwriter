@@ -24,4 +24,16 @@ it("browser memories survive reopening and reject stale edits; archive restores 
     documentId: "doc",
     revision: 3,
   });
+  expect(
+    (await memoryRepository.search("concise paragraphs", "doc"))[0].revision,
+  ).toBe(3);
+  expect(await memoryRepository.source(saved.id, "other")).toBeNull();
+  expect(await memoryRepository.source(saved.id, "doc")).toMatchObject({
+    revision: 3,
+  });
+  await memoryRepository.save({ ...restored, archived: true });
+  expect(await memoryRepository.search("concise paragraphs", "doc")).toEqual(
+    [],
+  );
+  expect(await memoryRepository.source(saved.id, "doc")).toBeNull();
 });

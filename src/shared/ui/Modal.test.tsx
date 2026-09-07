@@ -9,6 +9,36 @@ import { useState } from "react";
 import { afterEach, expect, it } from "vitest";
 import { Modal } from "./Modal";
 afterEach(cleanup);
+it("closes only the nested source and returns focus to its result button", async () => {
+  function Nested() {
+    const [source, setSource] = useState(false);
+    return (
+      <div className="app">
+        <Modal title="Library" onClose={() => {}}>
+          <input data-autofocus aria-label="Search" />
+          <button onClick={() => setSource(true)}>Open source</button>
+        </Modal>
+        {source && (
+          <Modal title="Source" onClose={() => setSource(false)}>
+            <p>Evidence</p>
+          </Modal>
+        )}
+      </div>
+    );
+  }
+  render(<Nested />);
+  const trigger = await screen.findByRole("button", { name: "Open source" });
+  trigger.focus();
+  fireEvent.click(trigger);
+  fireEvent.keyDown(await screen.findByRole("dialog", { name: "Source" }), {
+    key: "Escape",
+  });
+  await waitFor(() =>
+    expect(screen.queryByRole("dialog", { name: "Source" })).toBeNull(),
+  );
+  expect(screen.getByRole("dialog", { name: "Library" })).toBeTruthy();
+  await waitFor(() => expect(document.activeElement).toBe(trigger));
+});
 
 it("focuses the new composer when switching from a result dialog", async () => {
   function Flow() {

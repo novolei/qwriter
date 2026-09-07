@@ -62,6 +62,20 @@ export const commands = {
     __TAURI_INVOKE<MemoryEntry>("memory_save", { entry }),
   memorySearch: (query: string, documentId: string) =>
     __TAURI_INVOKE<MemoryEntry[]>("memory_search", { query, documentId }),
+  knowledgeSearch: (query: string, documentId: string) =>
+    __TAURI_INVOKE<KnowledgeChunk[]>("knowledge_search", { query, documentId }),
+  knowledgeSource: (memoryId: string, documentId: string) =>
+    __TAURI_INVOKE<{
+      id: string;
+      title: string;
+      content: string;
+      kind: string;
+      documentId: string;
+      source: string;
+      archived: boolean;
+      revision: number;
+      updatedAt: number;
+    } | null>("knowledge_source", { memoryId, documentId }),
   agentSessionSave: (session: AgentSession) =>
     __TAURI_INVOKE<null>("agent_session_save", { session }),
   agentSessions: () => __TAURI_INVOKE<AgentSession[]>("agent_sessions"),
@@ -158,6 +172,7 @@ export type AgentOutput = {
   rounds: number;
   memories: MemoryProposal[];
   memoryReadIds: string[];
+  knowledgeSources?: KnowledgeChunk[];
 };
 
 export type AgentSession = {
@@ -269,6 +284,25 @@ export type HarnessOptions = {
   imageIds: string[];
 };
 
+/**
+ *  Offsets count Unicode scalar values, never bytes or JavaScript UTF-16 units.
+ *  IDs are stable within a saved revision. New revisions intentionally invalidate anchors.
+ */
+export type KnowledgeChunk = {
+  id: string;
+  memoryId: string;
+  revision: number;
+  title: string;
+  heading: string;
+  source: string;
+  documentId: string;
+  startOffset: number;
+  endOffset: number;
+  startLine: number;
+  endLine: number;
+  content: string;
+};
+
 export type Library = {
   revision: number;
   docs: Document[];
@@ -378,6 +412,6 @@ export type Snapshot = {
 
 export type StreamEvent = { type: "started" } | { type: "delta"; text: string };
 
-export type ThinkingEffort = "low" | "medium" | "high";
+export type ThinkingEffort = "low" | "medium" | "high" | "max";
 
 export type ThinkingMode = "auto" | "on" | "off";

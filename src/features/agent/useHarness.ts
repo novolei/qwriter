@@ -25,7 +25,9 @@ function initial(): Preferences {
       ? raw.thinking!
       : "auto",
     effort:
-      raw.effort === "low" || raw.effort === "high" ? raw.effort : "medium",
+      raw.effort === "low" || raw.effort === "high" || raw.effort === "max"
+        ? raw.effort
+        : "medium",
     maxRounds: [4, 6, 10, 16].includes(raw.maxRounds ?? 0) ? raw.maxRounds! : 6,
     memoryEnabled: raw.memoryEnabled === true,
   };
@@ -84,6 +86,10 @@ export function useHarness(config: Profile, documentId: string) {
   }
   const options: HarnessOptions = {
     ...preferences,
+    effort:
+      preferences.effort === "max" && caps.reasoning !== "deepseek"
+        ? "high"
+        : preferences.effort,
     thinking: caps.reasoning === "none" ? "auto" : preferences.thinking,
     capabilities: caps,
     documentId,

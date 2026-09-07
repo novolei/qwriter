@@ -42,6 +42,8 @@ pub struct AgentOutput {
     pub rounds: u8,
     pub memories: Vec<MemoryProposal>,
     pub memory_read_ids: Vec<String>,
+    #[serde(default)]
+    pub knowledge_sources: Vec<crate::services::knowledge::chunks::KnowledgeChunk>,
 }
 
 #[derive(Clone, Deserialize, Serialize, specta::Type)]

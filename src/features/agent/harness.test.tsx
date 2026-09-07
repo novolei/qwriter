@@ -30,6 +30,35 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 afterEach(cleanup);
+it("preserves maximum effort preference while adapting it when switching away from DeepSeek", () => {
+  const { result, rerender } = renderHook(
+    ({ reasoning }: { reasoning: "deepseek" | "openai" }) =>
+      useHarness(
+        {
+          ...config,
+          capabilities: {
+            reasoning,
+            tools: "supported",
+            vision: "unknown",
+            contextWindow: 32768,
+          },
+        },
+        "doc",
+      ),
+    { initialProps: { reasoning: "deepseek" } },
+  );
+  act(() =>
+    result.current.setPreferences((p) => ({
+      ...p,
+      thinking: "on",
+      effort: "max",
+    })),
+  );
+  expect(result.current.options.effort).toBe("max");
+  rerender({ reasoning: "openai" });
+  expect(result.current.options.effort).toBe("high");
+  expect(result.current.preferences.effort).toBe("max");
+});
 it("tolerates malformed preferences and disables explicit thinking for unconfigured models", () => {
   localStorage.setItem("qwriter.harness.v1", "null");
   const { result } = renderHook(() => useHarness(config, "one"));

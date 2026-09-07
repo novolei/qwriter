@@ -7,13 +7,15 @@ use crate::{
     },
 };
 use base64::{engine::general_purpose::STANDARD, Engine};
+use knowledge::retriever::{KnowledgeRetriever, LocalRetriever};
 use serde_json::{json, Value};
-use std::{io::Cursor, path::Path};
+use std::{io::Cursor, path::Path, sync::Arc};
 
 #[derive(Default)]
 pub struct RunContext {
     pub images: Vec<String>,
     pub memories: Vec<MemoryEntry>,
+    pub retriever: Option<Arc<dyn KnowledgeRetriever>>,
 }
 impl RunContext {
     pub fn preferences(&self) -> impl Iterator<Item = &MemoryEntry> {
@@ -48,12 +50,11 @@ pub fn prepare(root: &Path, options: &HarnessOptions) -> AppResult<RunContext> {
         context.images.push(STANDARD.encode(bytes.into_inner()));
     }
     if options.memory_enabled {
-        context.memories = knowledge::list(root)?
-            .into_iter()
-            .filter(|e| {
-                !e.archived && (e.document_id.is_empty() || e.document_id == options.document_id)
-            })
-            .collect();
+        context.memories = knowledge::index::preferences(root, &options.document_id)?;
+        context.retriever = Some(Arc::new(LocalRetriever {
+            root: root.to_owned(),
+            document_id: options.document_id.clone(),
+        }));
     }
     Ok(context)
 }

@@ -33,6 +33,8 @@
     "allow-memory-list",
     "allow-memory-save",
     "allow-memory-search",
+    "allow-knowledge-search",
+    "allow-knowledge-source",
     "allow-agent-session-save",
     "allow-agent-sessions",
     "allow-media-pick",

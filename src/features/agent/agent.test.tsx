@@ -37,6 +37,7 @@ const output: AgentOutput = {
   rounds: 2,
   memories: [],
   memoryReadIds: [],
+  knowledgeSources: [],
 };
 function props() {
   return {
