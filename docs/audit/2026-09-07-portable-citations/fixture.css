@@ -1,0 +1,58 @@
+.citation-fixture > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.qa-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  flex: 1;
+  min-height: 0;
+}
+.qa-workspace > .editor {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.qa-workspace > .companion {
+  width: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--line);
+}
+.qa-workspace .paper {
+  flex: 1;
+  min-height: 0;
+  max-width: none;
+  margin: 0;
+  width: 100%;
+  overflow: auto;
+  padding: 28px;
+}
+.qa-workspace .paper .tiptap {
+  padding: 0;
+}
+.qa-workspace main > details {
+  padding: 8px 16px;
+  max-height: 180px;
+  overflow: auto;
+}
+.qa-workspace main > details pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.qa-status {
+  padding: 8px 16px;
+  color: var(--green);
+}
+@media (max-width: 900px) {
+  .qa-workspace {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}

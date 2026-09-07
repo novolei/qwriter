@@ -149,3 +149,8 @@
 .statusbar button {
   font-size: 10px;
 }
+.tiptap a[href^="#"]:focus-visible {
+  outline: 1px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 3px;
+}

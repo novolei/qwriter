@@ -2,6 +2,7 @@ import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { useWritingAgent } from "./useWritingAgent";
 import type { AgentEvent, AgentOutput } from "../../shared/ipc/bindings";
+import { knowledgeChunk } from "../../test/fixtures/knowledge";
 
 const mock = vi.hoisted(() => ({ run: vi.fn(), cancel: vi.fn() }));
 vi.mock("../../shared/ipc/bindings", () => ({
@@ -208,4 +209,71 @@ it("cancels late registration when the workspace has already unmounted", async (
     finish({ ...output, status: "cancelled", draft: null });
     await pending;
   });
+});
+
+it("uses the reviewed citation content for apply, save and explicit follow-up", async () => {
+  const cited: AgentOutput = {
+    ...output,
+    draft: {
+      ...output.draft!,
+      markdown: `[Observation](#knowledge-${knowledgeChunk.id})`,
+    },
+    knowledgeSources: [knowledgeChunk],
+  };
+  mock.run.mockResolvedValue(cited);
+  const p = props();
+  const { result } = renderHook(() => useWritingAgent(p));
+  act(() => result.current.setPrompt("Use evidence"));
+  await act(() => result.current.run());
+  const reviewed = result.current.citations.markdown;
+  expect(reviewed).toContain(knowledgeChunk.content);
+  expect(reviewed).not.toContain("#knowledge-");
+  expect(result.current.citations.sourceCount).toBe(1);
+  act(() => {
+    result.current.setFollowup(true);
+    result.current.setPrompt("Refine");
+  });
+  await act(() => result.current.run());
+  expect(
+    mock.run.mock.calls[1][2].notes.find(
+      (note: { id: string }) => note.id === "qwriter:previous-draft",
+    ).markdown,
+  ).toBe(reviewed);
+  await act(() => result.current.apply());
+  expect(p.setDocs.mock.calls[0][0]([doc])[0].markdown).toBe(reviewed);
+  await act(() => result.current.run());
+  act(() => result.current.save());
+  expect(p.selectDoc.mock.calls[0][0].markdown).toBe(reviewed);
+});
+
+it("honors opting out of source snapshots, including resumed historical drafts", async () => {
+  const p = props();
+  const { result } = renderHook(() => useWritingAgent(p));
+  act(() => {
+    result.current.resume({
+      id: "cited-history",
+      instruction: "Write",
+      model: "model",
+      documentId: "one",
+      createdAt: 1,
+      output: {
+        ...output,
+        draft: {
+          ...output.draft!,
+          markdown: `[Observation](#knowledge-${knowledgeChunk.id})`,
+        },
+        knowledgeSources: [knowledgeChunk],
+      },
+    });
+    result.current.setRetainCitations(false);
+    result.current.setPrompt("Refine");
+  });
+  expect(result.current.citations.markdown).toBe("Observation");
+  expect(result.current.canApply).toBe(false);
+  await act(() => result.current.run());
+  expect(
+    mock.run.mock.calls[0][2].notes.find(
+      (note: { id: string }) => note.id === "qwriter:previous-draft",
+    ).markdown,
+  ).toBe("Observation");
 });

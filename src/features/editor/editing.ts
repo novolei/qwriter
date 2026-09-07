@@ -53,6 +53,13 @@ export function toggleDocumentSerif(value: Typography): Typography {
   };
 }
 export function validEditorUrl(value: string, image = false) {
+  if (!image && /^#[^\s]+$/.test(value.trim())) {
+    try {
+      return !!decodeURIComponent(value.trim().slice(1));
+    } catch {
+      return false;
+    }
+  }
   try {
     const url = new URL(value.trim());
     return (

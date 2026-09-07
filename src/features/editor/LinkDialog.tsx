@@ -48,7 +48,9 @@ export function LinkDialog({
                 autoFocus
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://…"
+                placeholder={t(
+                  dialog === "image" ? "https://…" : "https://… 或 #标题锚点",
+                )}
               />
             </label>
             <label>
@@ -65,6 +67,11 @@ export function LinkDialog({
             {dialog === "image" && (
               <small>
                 {t("图片通过所填地址加载，Markdown 中保留地址和替代文本。")}
+              </small>
+            )}
+            {dialog === "link" && (
+              <small>
+                {t("以 # 开头的链接可跳转到文内标题；中文标题可直接填写。")}
               </small>
             )}
             {error && (

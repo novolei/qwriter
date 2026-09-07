@@ -75,7 +75,10 @@ export function useWorkspace() {
   const editor = useEditor(
     {
       extensions: [
-        ...editorExtensions(),
+        ...editorExtensions({
+          onMissingTarget: () =>
+            setNotice("文内链接的目标已不存在，请检查对应标题。"),
+        }),
         documentIdentity(current.id),
         Focus.configure({ className: "current-block", mode: "shallowest" }),
         Placeholder.configure({

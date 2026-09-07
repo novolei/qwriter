@@ -2,6 +2,7 @@ import { Channel, isTauri } from "@tauri-apps/api/core";
 import type { Editor } from "@tiptap/react";
 import {
   useEffect,
+  useMemo,
   useRef,
   useState,
   type Dispatch,
@@ -15,10 +16,13 @@ import {
   type AgentNote,
   type AgentDraft,
   type AgentSession,
+  type KnowledgeChunk,
 } from "../../shared/ipc/bindings";
 import type { Doc, Profile } from "../../shared/types";
 import { connectionIssue } from "../models/connection";
 import { useHarness } from "./useHarness";
+import { prepareCitations } from "../knowledge/citations";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   docs: Doc[];
@@ -32,6 +36,7 @@ type Props = {
 };
 type Status = "idle" | "running" | "complete" | "cancelled" | "limit" | "error";
 export function useWritingAgent(props: Props) {
+  useTranslation();
   const harness = useHarness(props.config, props.current.id);
   const latest = useRef(props);
   latest.current = props;
@@ -40,6 +45,7 @@ export function useWritingAgent(props: Props) {
   const stopping = useRef(false);
   const started = useRef(false);
   const previousDraft = useRef<AgentDraft | null>(null);
+  const previousSources = useRef<KnowledgeChunk[]>([]);
   const [status, setStatus] = useState<Status>("idle");
   const [prompt, setPrompt] = useState("");
   const [includeCurrent, setIncludeCurrent] = useState(true);
@@ -52,6 +58,17 @@ export function useWritingAgent(props: Props) {
   const [review, setReview] = useState(false);
   const [applying, setApplying] = useState(false);
   const [followup, setFollowup] = useState(false);
+  const [retainCitations, setRetainCitations] = useState(true);
+  const activeLanguage = language();
+  const citations = useMemo(
+    () =>
+      prepareCitations(
+        result?.draft?.markdown ?? result?.answer ?? "",
+        result?.knowledgeSources ?? [],
+        retainCitations,
+      ),
+    [result, retainCitations, activeLanguage],
+  );
   const busy = status === "running";
   useEffect(() => {
     mounted.current = true;
@@ -74,7 +91,11 @@ export function useWritingAgent(props: Props) {
       notes.push({
         id: "qwriter:previous-draft",
         title: previousDraft.current.title,
-        markdown: previousDraft.current.markdown,
+        markdown: prepareCitations(
+          previousDraft.current.markdown,
+          previousSources.current,
+          retainCitations,
+        ).markdown,
       });
     return notes;
   }
@@ -137,7 +158,10 @@ export function useWritingAgent(props: Props) {
         channel,
       );
       if (mounted.current && request.current === id) {
-        if (output.draft) previousDraft.current = output.draft;
+        if (output.draft) {
+          previousDraft.current = output.draft;
+          previousSources.current = output.knowledgeSources ?? [];
+        }
         setResult(output);
         setStatus(output.status);
         setFollowup(false);
@@ -193,14 +217,14 @@ export function useWritingAgent(props: Props) {
         throw new Error(t("原稿已变化，请重新生成建议，避免覆盖新内容"));
       await props.flush();
       if (!same()) throw new Error(t("保存期间原稿发生变化，请重新审阅"));
-      latest.current.editor?.commands.setContent(draft.markdown, {
+      latest.current.editor?.commands.setContent(citations.markdown, {
         contentType: "markdown",
         emitUpdate: false,
       });
       props.setDocs((old) =>
         old.map((doc) =>
           doc.id === base.id
-            ? { ...doc, markdown: draft.markdown, updated: Date.now() }
+            ? { ...doc, markdown: citations.markdown, updated: Date.now() }
             : doc,
         ),
       );
@@ -217,7 +241,7 @@ export function useWritingAgent(props: Props) {
   }
   function save() {
     if (!result || status !== "complete") return;
-    const content = result.draft?.markdown ?? result.answer;
+    const content = citations.markdown;
     if (!content.trim()) return;
     const doc: Doc = {
       id: crypto.randomUUID(),
@@ -238,6 +262,7 @@ export function useWritingAgent(props: Props) {
     resume: (session: AgentSession) => {
       if (request.current) return;
       previousDraft.current = session.output.draft;
+      previousSources.current = session.output.knowledgeSources ?? [];
       setResult(session.output);
       setStatus(session.output.status);
       setBase(null);
@@ -258,6 +283,9 @@ export function useWritingAgent(props: Props) {
     setSelected,
     events,
     result,
+    citations,
+    retainCitations,
+    setRetainCitations,
     error,
     base,
     references,

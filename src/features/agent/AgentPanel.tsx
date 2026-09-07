@@ -20,6 +20,7 @@ import { SessionHistory } from "./SessionHistory";
 import { KnowledgeEvidence, KnowledgePreview } from "./KnowledgeEvidence";
 import { MemoryLibrary } from "../knowledge/MemoryLibrary";
 import type { MemoryProposal } from "../../shared/ipc/bindings";
+import { CitationOptions } from "./CitationOptions";
 
 type Props = {
   agent: WritingAgent;
@@ -55,7 +56,7 @@ export function AgentPanel({
   const attached = docs.filter(
     (doc) => a.selected.includes(doc.id) && doc.id !== current.id,
   );
-  const content = a.result?.draft?.markdown ?? a.result?.answer;
+  const content = a.citations.markdown;
   return (
     <>
       <div
@@ -149,6 +150,12 @@ export function AgentPanel({
             </span>
             <h3>{a.result?.draft?.title || t("写作建议")}</h3>
             {a.result?.draft?.summary && <p>{a.result.draft.summary}</p>}
+            <CitationOptions
+              citations={a.citations}
+              retain={a.retainCitations}
+              disabled={a.applying}
+              onChange={a.setRetainCitations}
+            />
             <button
               className="draft-preview-toggle"
               aria-expanded={preview}
@@ -162,6 +169,7 @@ export function AgentPanel({
                 markdown={content}
                 sources={a.result?.knowledgeSources ?? []}
                 documentId={current.id}
+                citationReferences={a.citations.references}
               />
             )}
             <div className="agent-draft-actions">
@@ -408,7 +416,7 @@ export function AgentPanel({
       {a.review && a.result?.draft && a.base && (
         <Review
           before={a.base.markdown}
-          after={a.result.draft.markdown}
+          after={content}
           busy={a.applying}
           onApply={() => void a.apply()}
           onClose={() => a.setReview(false)}

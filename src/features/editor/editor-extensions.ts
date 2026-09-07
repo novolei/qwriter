@@ -7,6 +7,9 @@ import { SearchHighlight } from "./search/highlight";
 import { MediaNode } from "./media/MediaNode";
 import { LocalImageView } from "./media/LocalImageView";
 import { ReactNodeViewRenderer } from "@tiptap/react";
+import { HeadingAnchors, type HeadingAnchorOptions } from "./heading-anchors";
+import { TrailingParagraph } from "./trailing-paragraph";
+import { DocumentLink } from "./document-link";
 
 const MarkdownImage = Image.extend({
   addNodeView() {
@@ -25,13 +28,14 @@ const MarkdownImage = Image.extend({
 
 // Only expose formats with a Markdown representation. Arbitrary text colors,
 // alignment and per-span fonts would otherwise be lost on the next save.
-export function editorExtensions() {
+export function editorExtensions(anchors: Partial<HeadingAnchorOptions> = {}) {
   return [
     StarterKit.configure({
       underline: false,
-      trailingNode: { node: "paragraph" },
-      link: { openOnClick: false, defaultProtocol: "https" },
+      trailingNode: false,
+      link: false,
     }),
+    DocumentLink.configure({ openOnClick: false, defaultProtocol: "https" }),
     TableKit.configure({ table: { resizable: false } }),
     TaskList,
     TaskItem.configure({ nested: true }),
@@ -43,6 +47,8 @@ export function editorExtensions() {
       },
     }),
     Markdown,
+    TrailingParagraph.configure({ node: "paragraph" }),
+    HeadingAnchors.configure(anchors),
     SearchHighlight,
     MediaNode,
   ];

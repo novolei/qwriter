@@ -9,18 +9,24 @@ export function KnowledgePreview({
   markdown,
   sources,
   documentId,
+  citationReferences = {},
 }: {
   markdown: string;
   sources: KnowledgeChunk[];
   documentId: string;
+  citationReferences?: Record<string, KnowledgeChunk>;
 }) {
   const [selected, setSelected] = useState<KnowledgeChunk | null>(null);
-  const references = Object.fromEntries(
-    sources.map((chunk) => [
+  const references = Object.fromEntries([
+    ...sources.map((chunk) => [
       `#knowledge-${chunk.id}`,
       () => setSelected(chunk),
     ]),
-  );
+    ...Object.entries(citationReferences).map(([hash, chunk]) => [
+      hash,
+      () => setSelected(chunk),
+    ]),
+  ]);
   return (
     <>
       <MarkdownPreview markdown={markdown} references={references} />

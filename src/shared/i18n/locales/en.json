@@ -1038,5 +1038,16 @@
   "检索到的知识来源": "Retrieved knowledge sources",
   "点击查看原片段与位置；检索到不代表已核实或已引用。": "Open a passage and its location. Retrieval does not mean verification or citation.",
   "最高强度": "Maximum",
-  "DeepSeek：均衡与深入均对应 high；最高强度对应 max。输出长度仍受上下文预算约束。": "DeepSeek maps Balanced and Deep to high, and Maximum to max. Output length stays within the context budget."
+  "DeepSeek：均衡与深入均对应 high；最高强度对应 max。输出长度仍受上下文预算约束。": "DeepSeek maps Balanced and Deep to high, and Maximum to max. Output length stays within the context budget.",
+  "引用来源": "Sources",
+  "来源 {{number}} · {{title}}": "Source {{number}} · {{title}}",
+  "以下为引用时的知识片段快照，不代表内容已经核实。": "These are snapshots of the cited knowledge passages, not verification of their contents.",
+  "随文稿保留引用来源": "Keep sources with the document",
+  "{{count}} 个来源快照将随文稿保存和导出，请在分享前审阅。": "Source snapshots: {{count}}. Saved and exported with the document; review before sharing.",
+  "仅保留正文，知识引用将转为普通文字。": "Keep only the draft; knowledge citations become plain text.",
+  "{{count}} 处引用无法匹配本次来源，已转为普通文字，请核对内容。": "Unmatched citations: {{count}}. Converted to plain text; please check the content.",
+  "文内链接的目标已不存在，请检查对应标题。": "This internal link no longer has a destination. Check the heading.",
+  "https://…": "https://…",
+  "https://… 或 #标题锚点": "https://… or #heading-anchor",
+  "以 # 开头的链接可跳转到文内标题；中文标题可直接填写。": "Links beginning with # jump to headings in this document. Use lowercase words joined by hyphens; Chinese headings can be entered directly."
 }
