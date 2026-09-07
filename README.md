@@ -1,6 +1,6 @@
 # Qwriter 0.2
 
-测试安装包：在 [GitHub Actions · Test installers](https://github.com/novolei/qwriter/actions/workflows/test-installers.yml) 下载成功运行的 Windows / macOS 产物。详细构建步骤、WebView2 依赖与 macOS 签名限制见 [测试版分发](docs/TEST-DISTRIBUTION.md)。
+下载安装包与查看历史版本：[GitHub Releases](https://github.com/novolei/qwriter/releases)。Windows 选择 `x64-setup.exe`，macOS 选择 `universal.dmg`；Preview 为测试版。详细版本流程、WebView2 依赖与 macOS 签名限制见 [测试版分发](docs/TEST-DISTRIBUTION.md)。
 
 一间安静、可配置字体的 AI 写作书房。Tauri 2 + Rust + React + TypeScript + Tiptap。
 
@@ -69,7 +69,7 @@ Git 当前管理用户明确选择的本地文件夹，文稿库仍在 SQLite �
 
 复杂 Markdown 尚未保证所有语法无损往返。源码保护采取保守检测，并跳过围栏代码块中的字面量；源码模式下格式化按钮禁用，显示排版仍可调节。源文件导入为副本。ComfyUI 需自行准备服务、模型、节点与素材，目前仍是工作流 JSON 提交和历史 JSON 查询，未实现媒体预览回插。
 
-Windows 已构建；macOS 的签名、公证、真机测试和正式安装包仍待完成。
+Windows 与 macOS 通用版均已通过云端检查并生成安装包；macOS 目前仅使用 ad-hoc 临时签名，Developer ID 签名、公证和真机交互测试仍待完成。
 
 ## 文档
 

@@ -1,6 +1,7 @@
 name: Test installers
 
 on:
+  workflow_call:
   workflow_dispatch:
   push:
     tags: ["qwriter-test-*"]

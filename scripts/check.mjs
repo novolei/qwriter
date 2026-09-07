@@ -2,6 +2,7 @@ import { run, nodeTool } from "./runtime.mjs";
 
 await run(process.execPath, ["scripts/check-architecture.mjs"]);
 await run(process.execPath, ["--test", "scripts/tests/i18n-audit.test.mjs"]);
+await run(process.execPath, ["--test", "scripts/tests/release.test.mjs"]);
 await run(process.execPath, ["scripts/check-i18n.mjs"]);
 await nodeTool(
   "prettier/bin/prettier.cjs",
